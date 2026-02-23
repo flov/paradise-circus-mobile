@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "paradise-mobile",
-    "slug": "paradise-mobile",
+    "slug": "paradise-circus",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -34,6 +34,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d9ec8d60-b33a-4b4b-8345-1973a195c445"
+      }
+    },
+    "owner": "paradise-circus"
   }
 }
