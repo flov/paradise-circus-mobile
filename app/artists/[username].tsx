@@ -4,7 +4,6 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
   SafeAreaView,
 } from 'react-native';
@@ -63,20 +62,22 @@ export default function ArtistProfileScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.safe}>
-        <ActivityIndicator color={PC.accent} style={styles.loader} />
+      <SafeAreaView className="flex-1 bg-pc-bg">
+        <ActivityIndicator color={PC.accent} className="mt-[60px]" />
       </SafeAreaView>
     );
   }
 
   if (isError || !data) {
     return (
-      <SafeAreaView style={styles.safe}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+      <SafeAreaView className="flex-1 bg-pc-bg">
+        <TouchableOpacity onPress={() => router.back()} className="flex-row items-center px-5 pt-4 pb-2">
           <ChevronLeft size={18} color={PC.accent} />
-          <Text style={styles.backText}>Artists</Text>
+          <Text className="text-pc-accent text-base font-semibold ml-0.5">Artists</Text>
         </TouchableOpacity>
-        <Text style={styles.errorText}>Could not load artist profile.</Text>
+        <Text className="text-pc-textMuted text-[15px] text-center mt-10">
+          Could not load artist profile.
+        </Text>
       </SafeAreaView>
     );
   }
@@ -87,55 +88,66 @@ export default function ArtistProfileScreen() {
   const avatarBg = getAvatarBgColor(user.username);
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView className="flex-1 bg-pc-bg">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Back button */}
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => router.back()} className="flex-row items-center px-5 pt-4 pb-2">
           <ChevronLeft size={18} color={PC.accent} />
-          <Text style={styles.backText}>Artists</Text>
+          <Text className="text-pc-accent text-base font-semibold ml-0.5">Artists</Text>
         </TouchableOpacity>
 
         {/* Avatar */}
-        <View style={styles.avatarContainer}>
-          <View style={[styles.avatar, { backgroundColor: avatarBg }]}>
-            <Text style={styles.avatarText}>{initials}</Text>
+        <View className="items-center pt-5 pb-4 px-5">
+          <View
+            className="w-[88px] h-[88px] rounded-[44px] justify-center items-center mb-3.5"
+            style={{ backgroundColor: avatarBg }}
+          >
+            <Text className="text-pc-accent text-[28px] font-bold">{initials}</Text>
           </View>
-          <Text style={styles.name}>{displayName}</Text>
+          <Text className="text-pc-text text-[26px] font-extrabold mb-1 text-center">
+            {displayName}
+          </Text>
           {user.performanceStyle ? (
-            <Text style={styles.specialty}>{user.performanceStyle}</Text>
+            <Text className="text-pc-textMuted text-[15px] text-center">
+              {user.performanceStyle}
+            </Text>
           ) : null}
         </View>
 
         {/* Prop tags */}
         {props.length > 0 && (
-          <View style={styles.tagRow}>
+          <View className="flex-row flex-wrap justify-center px-5 gap-2 mb-1">
             {props.map((p) => (
-              <View key={p.propName} style={styles.tag}>
-                <Text style={styles.tagText}>{p.propName.toLowerCase()}</Text>
+              <View key={p.propName} className="border border-pc-accent rounded-2xl px-3 py-1">
+                <Text className="text-pc-accent text-[13px] font-medium">
+                  {p.propName.toLowerCase()}
+                </Text>
               </View>
             ))}
           </View>
         )}
 
-        <View style={styles.divider} />
+        <View className="h-px bg-pc-separator mx-5 my-5" />
 
         {/* About */}
         {user.bio ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>ABOUT</Text>
-            <Text style={styles.bio}>{user.bio}</Text>
+          <View className="px-5">
+            <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider mb-3">
+              ABOUT
+            </Text>
+            <Text className="text-pc-textSecondary text-[15px] leading-[23px]">{user.bio}</Text>
           </View>
         ) : null}
 
-        <View style={styles.divider} />
+        <View className="h-px bg-pc-separator mx-5 my-5" />
 
         {/* Workshops */}
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>
+        <View className="px-5">
+          <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider mb-3">
             WORKSHOPS ({upcomingWorkshops.length})
           </Text>
           {upcomingWorkshops.length === 0 ? (
-            <Text style={styles.noWorkshops}>No upcoming workshops</Text>
+            <Text className="text-pc-textMuted text-sm">No upcoming workshops</Text>
           ) : (
             upcomingWorkshops.map((workshop) => {
               const dateStr = parseDateStr(workshop.date);
@@ -143,42 +155,51 @@ export default function ArtistProfileScreen() {
               return (
                 <View
                   key={workshop.id}
-                  style={[styles.workshopCard, { borderLeftColor: getEventBorderColor(workshop.id) }]}
+                  className="bg-pc-card rounded-xl border-l-[3px] p-3.5 mb-3"
+                  style={{ borderLeftColor: getEventBorderColor(workshop.id) }}
                 >
-                  <View style={styles.workshopMeta}>
-                    <View style={styles.metaRow}>
-                      <Calendar size={12} color={PC.textMuted} style={styles.metaIcon} />
-                      <Text style={styles.metaText}>{getShortDayName(dateStr)}</Text>
+                  <View className="mb-2.5 gap-1">
+                    <View className="flex-row items-center">
+                      <Calendar size={12} color={PC.textMuted} className="mr-1.5" />
+                      <Text className="text-pc-textMuted text-[13px]">
+                        {getShortDayName(dateStr)}
+                      </Text>
                     </View>
-                    <View style={styles.metaRow}>
-                      <Clock size={12} color={PC.textMuted} style={styles.metaIcon} />
-                      <Text style={styles.metaText}>
+                    <View className="flex-row items-center">
+                      <Clock size={12} color={PC.textMuted} className="mr-1.5" />
+                      <Text className="text-pc-textMuted text-[13px]">
                         {formatTime(workshop.startTime)} – {formatTime(workshop.endTime)}
                       </Text>
                     </View>
                     {workshop.location ? (
-                      <View style={styles.metaRow}>
-                        <MapPin size={12} color={PC.textMuted} style={styles.metaIcon} />
-                        <Text style={styles.metaText}>{workshop.location}</Text>
+                      <View className="flex-row items-center">
+                        <MapPin size={12} color={PC.textMuted} className="mr-1.5" />
+                        <Text className="text-pc-textMuted text-[13px]">{workshop.location}</Text>
                       </View>
                     ) : null}
                   </View>
-                  <View style={styles.workshopBottom}>
-                    <Text style={styles.workshopTitle}>{workshop.title}</Text>
+                  <View className="flex-row justify-between items-center gap-3">
+                    <Text className="text-pc-text text-base font-bold flex-1">{workshop.title}</Text>
                     <TouchableOpacity
-                      onPress={() => toggle({
-                        id: workshop.id,
-                        title: workshop.title,
-                        date: dateStr,
-                        startTime: workshop.startTime,
-                        endTime: workshop.endTime,
-                        location: workshop.location,
-                        instructor: workshop.instructor,
-                      })}
-                      style={[styles.joinBtn, going && styles.joinBtnGoing]}
+                      onPress={() =>
+                        toggle({
+                          id: workshop.id,
+                          title: workshop.title,
+                          date: dateStr,
+                          startTime: workshop.startTime,
+                          endTime: workshop.endTime,
+                          location: workshop.location,
+                          instructor: workshop.instructor,
+                        })
+                      }
+                      className={`rounded-lg px-4 py-2 ${
+                        going ? 'bg-transparent border border-pc-accent' : 'bg-pc-accent'
+                      }`}
                       activeOpacity={0.8}
                     >
-                      <Text style={[styles.joinBtnText, going && styles.joinBtnTextGoing]}>
+                      <Text
+                        className={`text-sm font-bold ${going ? 'text-pc-accent' : 'text-black'}`}
+                      >
                         {going ? '✓ Joined' : 'Join'}
                       </Text>
                     </TouchableOpacity>
@@ -189,169 +210,8 @@ export default function ArtistProfileScreen() {
           )}
         </View>
 
-        <View style={styles.bottomPad} />
+        <View className="h-10" />
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: PC.bg,
-  },
-  loader: {
-    marginTop: 60,
-  },
-  errorText: {
-    color: PC.textMuted,
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: 40,
-  },
-  backBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 8,
-  },
-  backText: {
-    color: PC.accent,
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 2,
-  },
-  avatarContainer: {
-    alignItems: 'center',
-    paddingTop: 20,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-  },
-  avatar: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 14,
-  },
-  avatarText: {
-    color: PC.accent,
-    fontSize: 28,
-    fontWeight: '700',
-  },
-  name: {
-    color: PC.text,
-    fontSize: 26,
-    fontWeight: '800',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  specialty: {
-    color: PC.textMuted,
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    gap: 8,
-    marginBottom: 4,
-  },
-  tag: {
-    borderWidth: 1,
-    borderColor: PC.accent,
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-  },
-  tagText: {
-    color: PC.accent,
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: PC.separator,
-    marginHorizontal: 20,
-    marginVertical: 20,
-  },
-  section: {
-    paddingHorizontal: 20,
-  },
-  sectionLabel: {
-    color: PC.textMuted,
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1.5,
-    marginBottom: 12,
-  },
-  bio: {
-    color: PC.textSecondary,
-    fontSize: 15,
-    lineHeight: 23,
-  },
-  noWorkshops: {
-    color: PC.textMuted,
-    fontSize: 14,
-  },
-  workshopCard: {
-    backgroundColor: PC.card,
-    borderRadius: 12,
-    borderLeftWidth: 3,
-    padding: 14,
-    marginBottom: 12,
-  },
-  workshopMeta: {
-    marginBottom: 10,
-    gap: 4,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  metaIcon: {
-    marginRight: 6,
-  },
-  metaText: {
-    color: PC.textMuted,
-    fontSize: 13,
-  },
-  workshopBottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 12,
-  },
-  workshopTitle: {
-    color: PC.text,
-    fontSize: 16,
-    fontWeight: '700',
-    flex: 1,
-  },
-  joinBtn: {
-    backgroundColor: PC.accent,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  joinBtnGoing: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: PC.accent,
-  },
-  joinBtnText: {
-    color: '#000',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  joinBtnTextGoing: {
-    color: PC.accent,
-  },
-  bottomPad: {
-    height: 40,
-  },
-});

@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   TextInput,
-  StyleSheet,
   ActivityIndicator,
   SafeAreaView,
 } from 'react-native';
@@ -39,7 +38,7 @@ export default function ArtistsScreen() {
   }, [artists, query]);
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView className="flex-1 bg-pc-bg">
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.username}
@@ -47,16 +46,18 @@ export default function ArtistsScreen() {
         ListHeaderComponent={
           <View>
             {/* Brand header */}
-            <View style={styles.header}>
-              <Text style={styles.brand}>PARADISE CIRCUS</Text>
-              <Text style={styles.pageTitle}>Artists</Text>
+            <View className="pt-5 pb-4">
+              <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
+                PARADISE CIRCUS
+              </Text>
+              <Text className="text-pc-text text-[30px] font-extrabold">Artists</Text>
             </View>
 
             {/* Search bar */}
-            <View style={styles.searchContainer}>
-              <Search size={16} color={PC.textMuted} style={styles.searchIcon} />
+            <View className="flex-row items-center bg-pc-card rounded-xl px-3.5 py-2.5 mb-4">
+              <Search size={16} color={PC.textMuted} className="mr-2" />
               <TextInput
-                style={styles.searchInput}
+                className="flex-1 text-pc-text text-[15px] p-0"
                 placeholder="Search artists, disciplines..."
                 placeholderTextColor={PC.textMuted}
                 value={query}
@@ -68,20 +69,22 @@ export default function ArtistsScreen() {
 
             {/* Count */}
             {!isLoading && !isError && (
-              <Text style={styles.countLabel}>
+              <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider mb-3">
                 {filtered.length} {filtered.length === 1 ? 'ARTIST' : 'ARTISTS'}
               </Text>
             )}
 
             {isLoading && (
-              <ActivityIndicator color={PC.accent} style={styles.loader} />
+              <ActivityIndicator color={PC.accent} className="mt-10" />
             )}
             {isError && (
-              <Text style={styles.errorText}>Could not load artists. Check your connection.</Text>
+              <Text className="text-pc-textMuted text-[15px] text-center mt-10">
+                Could not load artists. Check your connection.
+              </Text>
             )}
           </View>
         }
-        contentContainerStyle={styles.listContent}
+        contentContainerClassName="px-5 pb-8"
         renderItem={({ item }: { item: ArtistListItem }) => (
           <ArtistCard
             artist={item}
@@ -90,77 +93,12 @@ export default function ArtistsScreen() {
         )}
         ListEmptyComponent={
           !isLoading && !isError ? (
-            <Text style={styles.emptyText}>No artists found</Text>
+            <Text className="text-pc-textMuted text-[15px] text-center mt-5">
+              No artists found
+            </Text>
           ) : null
         }
       />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: PC.bg,
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 32,
-  },
-  header: {
-    paddingTop: 20,
-    paddingBottom: 16,
-  },
-  brand: {
-    color: PC.accent,
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 2,
-    marginBottom: 4,
-  },
-  pageTitle: {
-    color: PC.text,
-    fontSize: 30,
-    fontWeight: '800',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: PC.card,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginBottom: 16,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    color: PC.text,
-    fontSize: 15,
-    padding: 0,
-  },
-  countLabel: {
-    color: PC.textMuted,
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1.5,
-    marginBottom: 12,
-  },
-  loader: {
-    marginTop: 40,
-  },
-  errorText: {
-    color: PC.textMuted,
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: 40,
-  },
-  emptyText: {
-    color: PC.textMuted,
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-});

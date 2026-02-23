@@ -4,10 +4,10 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
   SafeAreaView,
 } from 'react-native';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useQuery } from '@tanstack/react-query';
 import { fetchTimetable } from '@/lib/api';
 import { getWeekDates, formatLocalDate } from '@/lib/utils';
@@ -18,6 +18,7 @@ import type { TimetableEvent } from '@/lib/types';
 
 const DAY_ABBREVS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const DAY_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function getTodayIndex(): number {
   const day = new Date().getDay(); // 0=Sun
@@ -30,14 +31,40 @@ function parseDateDayIndex(dateStr: string): number {
   return day === 0 ? 6 : day - 1; // Mon=0
 }
 
-export default function TimetableScreen() {
-  const weekDates = useMemo(() => getWeekDates(0), []);
-  const start = useMemo(() => formatLocalDate(weekDates[0]), [weekDates]);
-  const end = useMemo(() => formatLocalDate(weekDates[6]), [weekDates]);
+function formatWeekRange(monday: Date, sunday: Date): string {
+  const d1 = monday.getDate();
+  const m1 = MONTHS[monday.getMonth()];
+  const y1 = monday.getFullYear();
+  const d2 = sunday.getDate();
+  const m2 = MONTHS[sunday.getMonth()];
+  const y2 = sunday.getFullYear();
 
+  if (y1 !== y2) {
+    return `${m1} ${d1}, ${y1} – ${m2} ${d2}, ${y2}`;
+  }
+  if (m1 !== m2) {
+    return `${m1} ${d1} – ${m2} ${d2}, ${y2}`;
+  }
+  return `${m1} ${d1} – ${d2}, ${y1}`;
+}
+
+export default function TimetableScreen() {
   const todayIndex = useMemo(getTodayIndex, []);
+  const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState(todayIndex);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset]);
+  const start = useMemo(() => formatLocalDate(weekDates[0]), [weekDates]);
+  const end = useMemo(() => formatLocalDate(weekDates[6]), [weekDates]);
+  const weekLabel = useMemo(() => formatWeekRange(weekDates[0], weekDates[6]), [weekDates]);
+
+  function changeWeek(delta: number) {
+    const newOffset = weekOffset + delta;
+    setWeekOffset(newOffset);
+    setExpandedId(null);
+    setSelectedDay(newOffset === 0 ? todayIndex : 0);
+  }
 
   const { data: events, isLoading, isError } = useQuery({
     queryKey: ['timetable', start, end],
@@ -68,20 +95,30 @@ export default function TimetableScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+    <SafeAreaView className="flex-1 bg-pc-bg">
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Brand header */}
-        <View style={styles.header}>
-          <Text style={styles.brand}>PARADISE CIRCUS</Text>
-          <Text style={styles.pageTitle}>Weekly Timetable</Text>
+        <View className="px-5 pt-5 pb-4">
+          <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
+            PARADISE CIRCUS
+          </Text>
+          <Text className="text-pc-text text-[30px] font-extrabold">Weekly Timetable</Text>
+        </View>
+
+        {/* Week navigator */}
+        <View className="flex-row items-center justify-between px-3 mb-4">
+          <TouchableOpacity onPress={() => changeWeek(-1)} className="p-2" activeOpacity={0.7}>
+            <ChevronLeft size={20} color={PC.textMuted} />
+          </TouchableOpacity>
+          <Text className="text-pc-textSecondary text-sm font-semibold">{weekLabel}</Text>
+          <TouchableOpacity onPress={() => changeWeek(1)} className="p-2" activeOpacity={0.7}>
+            <ChevronRight size={20} color={PC.textMuted} />
+          </TouchableOpacity>
         </View>
 
         {/* Day chip selector */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.chipRow}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View className="flex-row px-5 pb-5 gap-2">
           {DAY_ABBREVS.map((abbrev, i) => {
             const count = eventsByDay[i]?.length ?? 0;
             const isSelected = i === selectedDay;
@@ -92,38 +129,51 @@ export default function TimetableScreen() {
                   setSelectedDay(i);
                   setExpandedId(null);
                 }}
-                style={[styles.chip, isSelected && styles.chipSelected]}
+                className={`flex-row items-center rounded-2xl py-2 px-3.5 gap-1.5 ${
+                  isSelected ? 'bg-pc-accent' : 'bg-pc-card'
+                }`}
                 activeOpacity={0.7}
               >
-                <Text style={[styles.chipText, isSelected && styles.chipTextSelected]}>
+                <Text
+                  className={`text-sm font-semibold ${isSelected ? 'text-black' : 'text-pc-textMuted'}`}
+                >
                   {abbrev}
                 </Text>
-                <View style={[styles.chipBadge, isSelected && styles.chipBadgeSelected]}>
-                  <Text style={styles.chipBadgeText}>{count}</Text>
+                <View
+                  className={`min-w-5 h-5 justify-center items-center px-1 rounded-[10px] ${
+                    isSelected ? 'bg-black/30' : 'bg-[#0D0A07]'
+                  }`}
+                >
+                  <Text className="text-pc-text text-[11px] font-bold">{count}</Text>
                 </View>
               </TouchableOpacity>
             );
           })}
+          </View>
         </ScrollView>
 
         {/* Day label */}
-        <View style={styles.dayHeader}>
-          <Text style={styles.dayName}>{DAY_FULL[selectedDay]}</Text>
-          <Text style={styles.dayCount}>
+        <View className="flex-row justify-between items-baseline px-5 mb-4">
+          <Text className="text-pc-text text-[22px] font-bold">{DAY_FULL[selectedDay]}</Text>
+          <Text className="text-pc-textMuted text-[13px]">
             {selectedEvents.length} {selectedEvents.length === 1 ? 'workshop' : 'workshops'}
           </Text>
         </View>
 
         {/* Events */}
-        <View style={styles.eventList}>
+        <View className="px-5 pb-8">
           {isLoading && (
-            <ActivityIndicator color={PC.accent} style={styles.loader} />
+            <ActivityIndicator color={PC.accent} className="mt-10" />
           )}
           {isError && (
-            <Text style={styles.emptyText}>Could not load workshops. Check your connection.</Text>
+            <Text className="text-pc-textMuted text-[15px] text-center mt-10">
+              Could not load workshops. Check your connection.
+            </Text>
           )}
           {!isLoading && !isError && selectedEvents.length === 0 && (
-            <Text style={styles.emptyText}>No workshops today</Text>
+            <Text className="text-pc-textMuted text-[15px] text-center mt-10">
+              No workshops today
+            </Text>
           )}
           {selectedEvents.map((event) => (
             <EventCard
@@ -140,101 +190,3 @@ export default function TimetableScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: PC.bg,
-  },
-  scroll: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 16,
-  },
-  brand: {
-    color: PC.accent,
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 2,
-    marginBottom: 4,
-  },
-  pageTitle: {
-    color: PC.text,
-    fontSize: 30,
-    fontWeight: '800',
-  },
-  chipRow: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 8,
-  },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: PC.card,
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    gap: 6,
-  },
-  chipSelected: {
-    backgroundColor: PC.accent,
-  },
-  chipText: {
-    color: PC.textMuted,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  chipTextSelected: {
-    color: '#000',
-  },
-  chipBadge: {
-    backgroundColor: '#0D0A07',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-  },
-  chipBadgeSelected: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
-  chipBadgeText: {
-    color: PC.text,
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  dayHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  dayName: {
-    color: PC.text,
-    fontSize: 22,
-    fontWeight: '700',
-  },
-  dayCount: {
-    color: PC.textMuted,
-    fontSize: 13,
-  },
-  eventList: {
-    paddingHorizontal: 20,
-    paddingBottom: 32,
-  },
-  loader: {
-    marginTop: 40,
-  },
-  emptyText: {
-    color: PC.textMuted,
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: 40,
-  },
-});

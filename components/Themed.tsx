@@ -3,6 +3,7 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
+import { cssInterop } from 'nativewind';
 import { Text as DefaultText, View as DefaultView } from 'react-native';
 
 import Colors from '@/constants/Colors';
@@ -30,16 +31,22 @@ export function useThemeColor(
   }
 }
 
-export function Text(props: TextProps) {
+function ThemedText(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
 
   return <DefaultText style={[{ color }, style]} {...otherProps} />;
 }
 
-export function View(props: ViewProps) {
+function ThemedView(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
+
+cssInterop(ThemedText, { className: 'style' });
+cssInterop(ThemedView, { className: 'style' });
+
+export const Text = ThemedText;
+export const View = ThemedView;

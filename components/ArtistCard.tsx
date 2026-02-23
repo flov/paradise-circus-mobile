@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
 import { PC, getAvatarBgColor } from '@/constants/Colors';
 import { getInitials } from '@/lib/utils';
@@ -17,20 +17,29 @@ export default function ArtistCard({ artist, onPress }: Props) {
   const specialty = artist.performanceStyle || null;
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={styles.card}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.8}
+      className="bg-pc-card rounded-xl flex-row items-center p-3.5 mb-2.5"
+    >
       {/* Avatar */}
-      <View style={[styles.avatar, { backgroundColor: avatarBg }]}>
-        <Text style={styles.avatarText}>{initials}</Text>
+      <View
+        className="w-[52px] h-[52px] rounded-[26px] justify-center items-center mr-3.5"
+        style={{ backgroundColor: avatarBg }}
+      >
+        <Text className="text-pc-accent text-[17px] font-bold">{initials}</Text>
       </View>
 
       {/* Info */}
-      <View style={styles.info}>
-        <Text style={styles.name}>{displayName}</Text>
+      <View className="flex-1">
+        <Text className="text-pc-text text-base font-bold mb-0.5">{displayName}</Text>
         {specialty ? (
-          <Text style={styles.specialty} numberOfLines={1}>{specialty}</Text>
+          <Text className="text-pc-textMuted text-[13px] mb-1.5" numberOfLines={1}>
+            {specialty}
+          </Text>
         ) : null}
-        <View style={styles.workshopBadge}>
-          <Text style={styles.workshopBadgeText}>
+        <View className="self-start border border-pc-accent rounded-md px-2 py-0.5">
+          <Text className="text-pc-accent text-xs font-semibold">
             {artist.workshopCount} {artist.workshopCount === 1 ? 'workshop' : 'workshops'}
           </Text>
         </View>
@@ -41,54 +50,3 @@ export default function ArtistCard({ artist, onPress }: Props) {
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: PC.card,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
-    marginBottom: 10,
-  },
-  avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  avatarText: {
-    color: PC.accent,
-    fontSize: 17,
-    fontWeight: '700',
-  },
-  info: {
-    flex: 1,
-  },
-  name: {
-    color: PC.text,
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 2,
-  },
-  specialty: {
-    color: PC.textMuted,
-    fontSize: 13,
-    marginBottom: 6,
-  },
-  workshopBadge: {
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: PC.accent,
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  workshopBadgeText: {
-    color: PC.accent,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-});

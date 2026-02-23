@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Clock, MapPin } from 'lucide-react-native';
 import { PC, getEventBorderColor } from '@/constants/Colors';
 import type { TimetableEvent } from '@/lib/types';
@@ -24,52 +24,59 @@ export default function EventCard({ event, isExpanded, onPress, isGoing, onToggl
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.85}
-      style={[styles.card, { borderLeftColor: borderColor }]}
+      className="bg-pc-card rounded-xl border-l-[3px] p-3.5 mb-3"
+      style={{ borderLeftColor: borderColor }}
     >
       {/* Header row */}
-      <View style={styles.headerRow}>
-        <View style={styles.timeRow}>
-          <Clock size={13} color={PC.textMuted} style={styles.icon} />
-          <Text style={styles.time}>
+      <View className="flex-row justify-between items-center mb-1.5">
+        <View className="flex-row items-center">
+          <Clock size={13} color={PC.textMuted} className="mr-1" />
+          <Text className="text-pc-textMuted text-[13px]">
             {formatTime(event.startTime)} – {formatTime(event.endTime)}
           </Text>
         </View>
         {isGoing && (
-          <View style={styles.joinedBadge}>
-            <Text style={styles.joinedBadgeText}>✓ Joined</Text>
+          <View className="bg-pc-accent rounded-md px-2 py-0.5">
+            <Text className="text-black text-[11px] font-bold">✓ Joined</Text>
           </View>
         )}
       </View>
 
-      <Text style={styles.title}>{event.title}</Text>
+      <Text className="text-pc-text text-[17px] font-bold mb-2">{event.title}</Text>
 
-      <View style={styles.bottomRow}>
+      <View className="flex-row justify-between items-center">
         {instructorName ? (
-          <Text style={styles.instructor}>{instructorName}</Text>
+          <Text className="text-pc-accent text-sm font-medium flex-1">{instructorName}</Text>
         ) : (
           <View />
         )}
         {event.location ? (
-          <View style={styles.locationRow}>
-            <MapPin size={12} color={PC.textMuted} style={styles.icon} />
-            <Text style={styles.location}>{event.location}</Text>
+          <View className="flex-row items-center">
+            <MapPin size={12} color={PC.textMuted} className="mr-1" />
+            <Text className="text-pc-textMuted text-[13px]">{event.location}</Text>
           </View>
         ) : null}
       </View>
 
       {/* Expanded content */}
       {isExpanded && (
-        <View style={styles.expanded}>
-          <View style={styles.divider} />
+        <View className="mt-2">
+          <View className="h-px bg-pc-separator my-2.5" />
           {event.description ? (
-            <Text style={styles.description}>{event.description}</Text>
+            <Text className="text-pc-textSecondary text-sm leading-[21px] mb-3.5">
+              {event.description}
+            </Text>
           ) : null}
           <TouchableOpacity
             onPress={onToggleSchedule}
-            style={[styles.scheduleBtn, isGoing && styles.scheduleBtnRemove]}
+            className={`rounded-[10px] py-3 items-center ${
+              isGoing ? 'bg-pc-accentDanger border border-[#8B2020]' : 'bg-pc-accent'
+            }`}
             activeOpacity={0.8}
           >
-            <Text style={[styles.scheduleBtnText, isGoing && styles.scheduleBtnTextRemove]}>
+            <Text
+              className={`text-[15px] font-bold ${isGoing ? 'text-red-500' : 'text-black'}`}
+            >
               {isGoing ? '× Remove from Schedule' : '+ Add to My Schedule'}
             </Text>
           </TouchableOpacity>
@@ -78,99 +85,3 @@ export default function EventCard({ event, isExpanded, onPress, isGoing, onToggl
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: PC.card,
-    borderRadius: 12,
-    borderLeftWidth: 3,
-    padding: 14,
-    marginBottom: 12,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  timeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  icon: {
-    marginRight: 4,
-  },
-  time: {
-    color: PC.textMuted,
-    fontSize: 13,
-  },
-  joinedBadge: {
-    backgroundColor: PC.accent,
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  joinedBadgeText: {
-    color: '#000',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  title: {
-    color: PC.text,
-    fontSize: 17,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  bottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  instructor: {
-    color: PC.accent,
-    fontSize: 14,
-    fontWeight: '500',
-    flex: 1,
-  },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  location: {
-    color: PC.textMuted,
-    fontSize: 13,
-  },
-  expanded: {
-    marginTop: 8,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: PC.separator,
-    marginVertical: 10,
-  },
-  description: {
-    color: PC.textSecondary,
-    fontSize: 14,
-    lineHeight: 21,
-    marginBottom: 14,
-  },
-  scheduleBtn: {
-    backgroundColor: PC.accent,
-    borderRadius: 10,
-    paddingVertical: 13,
-    alignItems: 'center',
-  },
-  scheduleBtnRemove: {
-    backgroundColor: PC.accentDanger,
-    borderWidth: 1,
-    borderColor: '#8B2020',
-  },
-  scheduleBtnText: {
-    color: '#000',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  scheduleBtnTextRemove: {
-    color: '#EF4444',
-  },
-});
