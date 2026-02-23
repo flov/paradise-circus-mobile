@@ -14,7 +14,6 @@ import { fetchArtist } from '@/lib/api';
 import { useSavedEvents } from '@/lib/schedule';
 import { PC, getAvatarBgColor, getEventBorderColor } from '@/constants/Colors';
 import { getInitials } from '@/lib/utils';
-import type { Workshop } from '@/lib/types';
 
 function parseDateStr(date: string | Date): string {
   if (date instanceof Date) {
@@ -33,14 +32,6 @@ function getShortDayName(dateStr: string): string {
   return names[new Date(y, m - 1, d).getDay()];
 }
 
-function isUpcoming(workshop: Workshop): boolean {
-  const dateStr = parseDateStr(workshop.date);
-  const [y, m, d] = dateStr.split('-').map(Number);
-  const workshopDate = new Date(y, m - 1, d);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return workshopDate >= today;
-}
 
 export default function ArtistProfileScreen() {
   const { username } = useLocalSearchParams<{ username: string }>();
@@ -54,10 +45,10 @@ export default function ArtistProfileScreen() {
   });
 
   const upcomingWorkshops = useMemo(() => {
-    if (!data?.workshops) return [];
-    return data.workshops
-      .filter(isUpcoming)
-      .sort((a, b) => parseDateStr(a.date).localeCompare(parseDateStr(b.date)));
+    if (!data?.workshops?.upcoming) return [];
+    return [...data.workshops.upcoming].sort((a, b) =>
+      parseDateStr(a.date).localeCompare(parseDateStr(b.date)),
+    );
   }, [data]);
 
   if (isLoading) {

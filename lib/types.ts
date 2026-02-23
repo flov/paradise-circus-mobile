@@ -90,5 +90,5 @@ export interface ArtistProfile {
 export interface ArtistProfileResponse {
   user: ArtistProfile;
   props: ArtistProp[];
-  workshops: Workshop[];
+  workshops: { upcoming: Workshop[]; past: Workshop[] };
 }
