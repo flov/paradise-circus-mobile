@@ -27,6 +27,8 @@ export const PC = {
   textMuted: '#8A8078',
   textSecondary: '#C0B8B0',
   separator: '#2A2420',
+  instagram: '#E1306C',
+  purple: '#A855F7',
 } as const;
 
 const EVENT_BORDER_COLORS = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899'];

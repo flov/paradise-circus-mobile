@@ -1,20 +1,20 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { ChevronRight, Instagram } from 'lucide-react-native';
-import { PC, getAvatarBgColor } from '@/constants/Colors';
-import { getInitials } from '@/lib/utils';
-import type { ArtistListItem } from '@/lib/types';
+import React from "react"
+import { View, Text, TouchableOpacity, Image } from "react-native"
+import { ChevronRight, Instagram, FileText } from "lucide-react-native"
+import { PC, getAvatarBgColor } from "@/constants/Colors"
+import { getInitials } from "@/lib/utils"
+import type { ArtistListItem } from "@/lib/types"
 
 interface Props {
-  artist: ArtistListItem;
-  onPress: () => void;
+  artist: ArtistListItem
+  onPress: () => void
 }
 
 export default function ArtistCard({ artist, onPress }: Props) {
-  const displayName = artist.name || artist.username;
-  const initials = getInitials(displayName);
-  const avatarBg = getAvatarBgColor(artist.username);
-  const specialty = artist.performanceStyle || null;
+  const displayName = artist.name || artist.username
+  const initials = getInitials(displayName)
+  const avatarBg = getAvatarBgColor(artist.username)
+  const specialty = artist.performanceStyle || null
 
   return (
     <TouchableOpacity
@@ -33,32 +33,43 @@ export default function ArtistCard({ artist, onPress }: Props) {
           className="w-[52px] h-[52px] rounded-[26px] justify-center items-center mr-3.5"
           style={{ backgroundColor: avatarBg }}
         >
-          <Text className="text-pc-accent text-[17px] font-bold">{initials}</Text>
+          <Text className="text-pc-accent text-[17px] font-bold">
+            {initials}
+          </Text>
         </View>
       )}
 
       {/* Info */}
       <View className="flex-1">
-        <View className="flex-row items-center gap-1.5 mb-0.5">
-          <Text className="text-pc-text text-base font-bold">{displayName}</Text>
-          {artist.instagramHandle ? (
-            <Instagram size={14} color="#a855f7" />
-          ) : null}
-        </View>
+        <Text className="text-pc-text text-base font-bold mb-0.5">
+          {displayName}
+        </Text>
         {specialty ? (
-          <Text className="text-pc-textMuted text-[13px] mb-1.5" numberOfLines={1}>
+          <Text
+            className="text-pc-textMuted text-[13px] mb-1.5"
+            numberOfLines={1}
+          >
             {specialty}
           </Text>
         ) : null}
-        <View className="self-start border border-pc-accent rounded-md px-2 py-0.5">
-          <Text className="text-pc-accent text-xs font-semibold">
-            {artist.workshopCount} {artist.workshopCount === 1 ? 'workshop' : 'workshops'}
-          </Text>
+        <View className="flex-row items-center gap-2">
+          {artist.workshopCount > 0 ? (
+            <View className="self-start border border-pc-accent rounded-md px-2 py-0.5">
+              <Text className="text-pc-accent text-xs font-semibold">
+                {artist.workshopCount}{" "}
+                {artist.workshopCount === 1 ? "workshop" : "workshops"}
+              </Text>
+            </View>
+          ) : null}
+          {artist.instagramHandle ? (
+            <Instagram size={20} color={PC.instagram} />
+          ) : null}
+          {artist.bio ? <FileText size={20} color={PC.purple} /> : null}
         </View>
       </View>
 
       {/* Chevron */}
       <ChevronRight size={18} color={PC.textMuted} />
     </TouchableOpacity>
-  );
+  )
 }
