@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react"
+import React, { useMemo, useState } from "react"
 import {
   View,
   Text,
@@ -104,11 +104,11 @@ export default function TimetableScreen() {
   })
 
   const { isGoing, toggle } = useSavedEvents()
-  const confettiRef = useRef<ConfettiCannon>(null)
+  const [showConfetti, setShowConfetti] = useState(false)
   const { width, height } = Dimensions.get("window")
 
   function triggerConfetti() {
-    confettiRef.current?.start()
+    setShowConfetti(true)
   }
 
   // Group events by day index (Mon=0 ... Sun=6), sorted by startTime
@@ -134,27 +134,29 @@ export default function TimetableScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-pc-bg">
-      <View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 9999,
-        }}
-      >
-        <ConfettiCannon
-          ref={confettiRef}
-          count={150}
-          origin={{ x: width / 2, y: height * 0.5 }}
-          explosionSpeed={350}
-          fallSpeed={3000}
-          fadeOut
-          autoStart={false}
-        />
-      </View>
+      {showConfetti && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999,
+          }}
+        >
+          <ConfettiCannon
+            count={150}
+            origin={{ x: width / 2, y: height * 0.5 }}
+            explosionSpeed={350}
+            fallSpeed={3000}
+            fadeOut
+            autoStart
+            onAnimationEnd={() => setShowConfetti(false)}
+          />
+        </View>
+      )}
       <LinearGradient
         colors={["#3D1A04", "#1A0A02", PC.bg]}
         locations={[0, 0.5, 1]}

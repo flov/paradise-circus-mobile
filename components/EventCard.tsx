@@ -78,15 +78,22 @@ export default function EventCard({
             {formatTime(event.startTime)} – {formatTime(event.endTime)}
           </Text>
         </View>
-        <View className="flex-row items-center gap-2">
-          {isGoing && (
-            <View className="bg-pc-accent rounded-md px-2 py-0.5">
-              <Text className="text-black text-[11px] font-bold">
-                ✓ On Schedule
-              </Text>
-            </View>
-          )}
-          {avatarUrl && event.instructorProfile?.username && (
+        {isGoing && (
+          <View className="bg-pc-accent rounded-md px-2 py-0.5">
+            <Text className="text-black text-[11px] font-bold">
+              ✓ On Schedule
+            </Text>
+          </View>
+        )}
+      </View>
+
+      <Text className="text-pc-text text-[17px] font-bold mb-2">
+        {event.title}
+      </Text>
+
+      <View className="flex-row justify-between items-center">
+        <View className="flex-row items-center gap-2 flex-1 mr-2">
+          {avatarUrl && event.instructorProfile?.username ? (
             <TouchableOpacity
               onPress={() =>
                 router.push(`/artists/${event.instructorProfile!.username}`)
@@ -96,36 +103,32 @@ export default function EventCard({
             >
               <Image
                 source={{ uri: avatarUrl }}
-                style={{ width: 28, height: 28, borderRadius: 14 }}
+                style={{ width: 24, height: 24, borderRadius: 12 }}
               />
             </TouchableOpacity>
-          )}
-        </View>
-      </View>
-
-      <Text className="text-pc-text text-[17px] font-bold mb-2">
-        {event.title}
-      </Text>
-
-      <View className="flex-row justify-between items-center">
-        {instructorName && event.instructorProfile?.username ? (
-          <TouchableOpacity
-            onPress={() =>
-              router.push(`/artists/${event.instructorProfile!.username}`)
-            }
-            activeOpacity={0.7}
-          >
-            <Text className="text-pc-accent text-sm font-medium flex-1">
+          ) : avatarUrl ? (
+            <Image
+              source={{ uri: avatarUrl }}
+              style={{ width: 24, height: 24, borderRadius: 12 }}
+            />
+          ) : null}
+          {instructorName && event.instructorProfile?.username ? (
+            <TouchableOpacity
+              onPress={() =>
+                router.push(`/artists/${event.instructorProfile!.username}`)
+              }
+              activeOpacity={0.7}
+            >
+              <Text className="text-pc-accent text-sm font-medium">
+                {instructorName}
+              </Text>
+            </TouchableOpacity>
+          ) : instructorName ? (
+            <Text className="text-pc-accent text-sm font-medium">
               {instructorName}
             </Text>
-          </TouchableOpacity>
-        ) : instructorName ? (
-          <Text className="text-pc-accent text-sm font-medium flex-1">
-            {instructorName}
-          </Text>
-        ) : (
-          <View />
-        )}
+          ) : null}
+        </View>
         {event.location ? (
           <View className="flex-row items-center">
             <MapPin size={12} color={PC.textMuted} style={{ marginRight: 4 }} />
