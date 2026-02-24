@@ -57,6 +57,7 @@ export default function ArtistsScreen() {
   const [propPickerVisible, setPropPickerVisible] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [filterInstructor, setFilterInstructor] = useState(false);
+  const [filterAdmin, setFilterAdmin] = useState(false);
   const [filterVideos, setFilterVideos] = useState(false);
   const [filterBio, setFilterBio] = useState(false);
 
@@ -92,6 +93,7 @@ export default function ArtistsScreen() {
     }
 
     if (filterInstructor) result = result.filter((a) => a.isInstructor);
+    if (filterAdmin) result = result.filter((a) => a.isAdmin);
     if (filterVideos) result = result.filter((a) => a.videoCount > 0);
     if (filterBio) result = result.filter((a) => !!a.bio);
 
@@ -223,6 +225,12 @@ export default function ArtistsScreen() {
                 active={filterBio}
                 onPress={() => setFilterBio((v) => !v)}
                 activeColor="#2B7B5A"
+              />
+              <FilterChip
+                label="Admin"
+                active={filterAdmin}
+                onPress={() => setFilterAdmin((v) => !v)}
+                activeColor={PC.accent}
               />
               <View style={{ flex: 1 }} />
               <TouchableOpacity onPress={() => setSortOrder((s) => (s === 'newest' ? 'az' : 'newest'))}>

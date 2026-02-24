@@ -1,6 +1,6 @@
 import React from "react"
 import { View, Text, TouchableOpacity, Image } from "react-native"
-import { ChevronRight, Instagram, FileText } from "lucide-react-native"
+import { ChevronRight, Instagram, FileText, Video } from "lucide-react-native"
 import { PC, getAvatarBgColor } from "@/constants/Colors"
 import { getInitials } from "@/lib/utils"
 import type { ArtistListItem } from "@/lib/types"
@@ -14,7 +14,8 @@ export default function ArtistCard({ artist, onPress }: Props) {
   const displayName = artist.name || artist.username
   const initials = getInitials(displayName)
   const avatarBg = getAvatarBgColor(artist.username)
-  const propNames = artist.props.length > 0 ? artist.props.map((p) => p.name).join(" · ") : null
+  const propNames =
+    artist.props.length > 0 ? artist.props.map((p) => p.name).join(" · ") : null
 
   return (
     <TouchableOpacity
@@ -43,7 +44,7 @@ export default function ArtistCard({ artist, onPress }: Props) {
       <View className="flex-1">
         <Text
           className="text-pc-text text-base mb-0.5"
-          style={{ fontFamily: 'JosefinSans_700Bold' }}
+          style={{ fontFamily: "JosefinSans_700Bold" }}
         >
           {displayName}
         </Text>
@@ -76,6 +77,11 @@ export default function ArtistCard({ artist, onPress }: Props) {
           ) : null}
           {artist.instagramHandle ? (
             <Instagram size={20} color={PC.instagram} />
+          ) : null}
+          {artist.videoCount > 0 ? (
+            <>
+              <Video size={20} color={PC.purple} />
+            </>
           ) : null}
           {artist.bio ? <FileText size={20} color={PC.purple} /> : null}
         </View>

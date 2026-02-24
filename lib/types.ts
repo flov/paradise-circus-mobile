@@ -42,6 +42,7 @@ export interface ArtistListItem {
   avatar?: string;
   username: string;
   isInstructor: boolean | null;
+  isAdmin?: boolean;
   workshopCount: number;
   props: Array<{ name: string; skillLevel: number }>;
   videoCount: number;
