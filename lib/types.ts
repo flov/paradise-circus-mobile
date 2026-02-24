@@ -79,6 +79,7 @@ export interface ArtistProfile {
   patreonPage: string | null;
   website: string | null;
   isInstructor: boolean | null;
+  isAdmin: boolean | null;
   availableForPerformances: boolean | null;
   performanceStyle: string | null;
   location: string | null;

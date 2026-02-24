@@ -1,6 +1,6 @@
 import React from "react"
 import { View, Text, TouchableOpacity, Image } from "react-native"
-import { ChevronRight, Instagram, FileText, Video } from "lucide-react-native"
+import { ChevronRight, Instagram, FileText, Video, Shield, Code } from "lucide-react-native"
 import { PC, getAvatarBgColor } from "@/constants/Colors"
 import { getInitials } from "@/lib/utils"
 import type { ArtistListItem } from "@/lib/types"
@@ -98,6 +98,8 @@ export default function ArtistCard({ artist, onPress }: Props) {
             </View>
           ) : null}
           {artist.bio ? <FileText size={20} color={PC.purple} /> : null}
+          {artist.isAdmin ? <Shield size={18} color="#3B82F6" /> : null}
+          {artist.username === 'the_flow_wizard' ? <Code size={18} color="#22D3EE" /> : null}
         </View>
       </View>
 

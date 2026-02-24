@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, Calendar, Clock, MapPin, Instagram, Play } from 'lucide-react-native';
+import { ChevronLeft, Calendar, Clock, MapPin, Instagram, Play, Globe, Shield, Code } from 'lucide-react-native';
 import { fetchArtist } from '@/lib/api';
 import { useSavedEvents } from '@/lib/schedule';
 import { PC, getAvatarBgColor, getEventBorderColor } from '@/constants/Colors';
@@ -89,6 +89,13 @@ export default function ArtistProfileScreen() {
     );
   }, [data]);
 
+  const pastWorkshops = useMemo(() => {
+    if (!data?.workshops?.past) return [];
+    return [...data.workshops.past].sort((a, b) =>
+      parseDateStr(b.date).localeCompare(parseDateStr(a.date)),
+    );
+  }, [data]);
+
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-pc-bg">
@@ -148,6 +155,12 @@ export default function ArtistProfileScreen() {
               {user.performanceStyle}
             </Text>
           ) : null}
+          {user.location ? (
+            <View className="flex-row items-center gap-1.5 mt-1.5">
+              <Globe size={13} color={PC.textMuted} />
+              <Text className="text-pc-textMuted text-[13px]">{user.location}</Text>
+            </View>
+          ) : null}
           {user.instagramHandle ? (
             <TouchableOpacity
               onPress={() => Linking.openURL(`https://instagram.com/${user.instagramHandle}`)}
@@ -159,6 +172,17 @@ export default function ArtistProfileScreen() {
                 @{user.instagramHandle}
               </Text>
             </TouchableOpacity>
+          ) : null}
+          {(user.isInstructor || user.isAdmin || user.username === 'the_flow_wizard') ? (
+            <View className="flex-row items-center gap-2 mt-2.5">
+              {user.isInstructor ? (
+                <View className="border rounded-md px-2 py-0.5" style={{ borderColor: '#DC2626' }}>
+                  <Text className="text-xs font-semibold" style={{ color: '#DC2626' }}>Instructor</Text>
+                </View>
+              ) : null}
+              {user.isAdmin ? <Shield size={18} color="#3B82F6" /> : null}
+              {user.username === 'the_flow_wizard' ? <Code size={18} color="#22D3EE" /> : null}
+            </View>
           ) : null}
         </View>
 
@@ -289,6 +313,28 @@ export default function ArtistProfileScreen() {
             })
           )}
         </View>
+
+        {/* Past workshops */}
+        {pastWorkshops.length > 0 && (
+          <View className="px-5 mt-5">
+            <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider mb-3">
+              PAST WORKSHOPS ({pastWorkshops.length})
+            </Text>
+            {pastWorkshops.map((workshop) => {
+              const dateStr = parseDateStr(workshop.date);
+              const [y, m, d] = dateStr.split('-').map(Number);
+              const formatted = new Date(y, m - 1, d).toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric',
+              });
+              return (
+                <View key={workshop.id} className="flex-row justify-between mb-2">
+                  <Text className="text-pc-text text-[14px] flex-1 mr-3">{workshop.title}</Text>
+                  <Text className="text-pc-textMuted text-[13px]">{formatted}</Text>
+                </View>
+              );
+            })}
+          </View>
+        )}
 
         <View className="h-10" />
       </ScrollView>

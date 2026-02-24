@@ -102,7 +102,7 @@ export default function ArtistsScreen() {
         ? Number(b.id) - Number(a.id)
         : (a.name || a.username).localeCompare(b.name || b.username)
     );
-  }, [artists, query, selectedProp, sortOrder, filterInstructor, filterVideos, filterBio]);
+  }, [artists, query, selectedProp, sortOrder, filterInstructor, filterAdmin, filterVideos, filterBio]);
 
   return (
     <SafeAreaView className="flex-1 bg-pc-bg">
