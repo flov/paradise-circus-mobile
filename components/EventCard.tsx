@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import { View, Text, TouchableOpacity, Image } from "react-native"
+import { useRouter } from "expo-router"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -31,6 +32,7 @@ export default function EventCard({
   isGoing,
   onToggleSchedule,
 }: Props) {
+  const router = useRouter()
   const instructorName = event.instructorDisplayName || event.instructor
   const borderColor = getEventBorderColor(event.id)
   const avatarUrl = event.instructorAvatarUrl
@@ -82,11 +84,17 @@ export default function EventCard({
               </Text>
             </View>
           )}
-          {avatarUrl && (
-            <Image
-              source={{ uri: avatarUrl }}
-              style={{ width: 28, height: 28, borderRadius: 14 }}
-            />
+          {avatarUrl && event.instructorProfile?.username && (
+            <TouchableOpacity
+              onPress={() => router.push(`/artists/${event.instructorProfile!.username}`)}
+              activeOpacity={0.8}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            >
+              <Image
+                source={{ uri: avatarUrl }}
+                style={{ width: 28, height: 28, borderRadius: 14 }}
+              />
+            </TouchableOpacity>
           )}
         </View>
       </View>
@@ -96,7 +104,16 @@ export default function EventCard({
       </Text>
 
       <View className="flex-row justify-between items-center">
-        {instructorName ? (
+        {instructorName && event.instructorProfile?.username ? (
+          <TouchableOpacity
+            onPress={() => router.push(`/artists/${event.instructorProfile!.username}`)}
+            activeOpacity={0.7}
+          >
+            <Text className="text-pc-accent text-sm font-medium flex-1">
+              {instructorName}
+            </Text>
+          </TouchableOpacity>
+        ) : instructorName ? (
           <Text className="text-pc-accent text-sm font-medium flex-1">
             {instructorName}
           </Text>

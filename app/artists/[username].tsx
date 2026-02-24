@@ -71,6 +71,17 @@ function getShortDayName(dateStr: string): string {
   return names[new Date(y, m - 1, d).getDay()];
 }
 
+function formatOrdinalDate(dateStr: string): string {
+  const [, m, d] = dateStr.split('-').map(Number);
+  const months = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  const suffix = d === 1 || d === 21 || d === 31 ? 'st'
+    : d === 2 || d === 22 ? 'nd'
+    : d === 3 || d === 23 ? 'rd'
+    : 'th';
+  return `${d}${suffix} of ${months[m - 1]}`;
+}
+
 
 export default function ArtistProfileScreen() {
   const { username } = useLocalSearchParams<{ username: string }>();
@@ -295,7 +306,7 @@ export default function ArtistProfileScreen() {
                     <View className="flex-row items-center">
                       <Calendar size={12} color={PC.textMuted} className="mr-1.5" />
                       <Text className="text-pc-textMuted text-[13px]">
-                        {getShortDayName(dateStr)}
+                        {getShortDayName(dateStr)}, {formatOrdinalDate(dateStr)}
                       </Text>
                     </View>
                     <View className="flex-row items-center">
