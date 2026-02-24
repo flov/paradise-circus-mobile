@@ -9,6 +9,7 @@ import {
 import { Clock, MapPin, X } from 'lucide-react-native';
 import { useSavedEvents, type SavedEventSnapshot } from '@/lib/schedule';
 import { PC, getEventBorderColor } from '@/constants/Colors';
+import { LinearGradient } from 'expo-linear-gradient';
 
 function parseDateDayName(dateStr: string): string {
   const [y, m, d] = dateStr.split('-').map(Number);
@@ -45,6 +46,12 @@ export default function MyScheduleScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-pc-bg">
+      <LinearGradient
+        colors={['#3D1A04', '#1A0A02', PC.bg]}
+        locations={[0, 0.5, 1]}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 420 }}
+        pointerEvents="none"
+      />
       {/* Brand header */}
       <View className="px-5 pt-5 pb-4">
         <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
