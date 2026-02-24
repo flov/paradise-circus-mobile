@@ -66,7 +66,7 @@ export default function EventCard({
       onPress={onPress}
       activeOpacity={0.85}
       className="bg-pc-card rounded-xl border-l-[3px] p-3.5 mb-3"
-      style={{ borderLeftColor: borderColor }}
+      // style={{ borderLeftColor: borderColor }}
     >
       {/* Header row */}
       <View className="flex-row justify-between items-center mb-1.5">
@@ -86,7 +86,9 @@ export default function EventCard({
           )}
           {avatarUrl && event.instructorProfile?.username && (
             <TouchableOpacity
-              onPress={() => router.push(`/artists/${event.instructorProfile!.username}`)}
+              onPress={() =>
+                router.push(`/artists/${event.instructorProfile!.username}`)
+              }
               activeOpacity={0.8}
               hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
             >
@@ -106,7 +108,9 @@ export default function EventCard({
       <View className="flex-row justify-between items-center">
         {instructorName && event.instructorProfile?.username ? (
           <TouchableOpacity
-            onPress={() => router.push(`/artists/${event.instructorProfile!.username}`)}
+            onPress={() =>
+              router.push(`/artists/${event.instructorProfile!.username}`)
+            }
             activeOpacity={0.7}
           >
             <Text className="text-pc-accent text-sm font-medium flex-1">

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react"
 import {
   View,
   Text,
@@ -8,33 +8,57 @@ import {
   SafeAreaView,
   Image,
   Linking,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, Calendar, Clock, MapPin, Instagram, Play, Globe, Shield, Code } from 'lucide-react-native';
-import { fetchArtist } from '@/lib/api';
-import { useSavedEvents } from '@/lib/schedule';
-import { PC, getAvatarBgColor, getEventBorderColor } from '@/constants/Colors';
-import { getInitials, extractYouTubeId, extractVimeoId, getVimeoEmbedUrl } from '@/lib/utils';
-import { WebView } from 'react-native-webview';
+} from "react-native"
+import { LinearGradient } from "expo-linear-gradient"
+import { useLocalSearchParams, useRouter } from "expo-router"
+import { useQuery } from "@tanstack/react-query"
+import {
+  ChevronLeft,
+  Calendar,
+  Clock,
+  MapPin,
+  Instagram,
+  Play,
+  Globe,
+  Shield,
+  Code,
+} from "lucide-react-native"
+import { fetchArtist } from "@/lib/api"
+import { useSavedEvents } from "@/lib/schedule"
+import { PC, getAvatarBgColor, getEventBorderColor } from "@/constants/Colors"
+import {
+  getInitials,
+  extractYouTubeId,
+  extractVimeoId,
+  getVimeoEmbedUrl,
+} from "@/lib/utils"
+import { WebView } from "react-native-webview"
 
 function YouTubeThumbnail({ videoId }: { videoId: string }) {
-  const thumbUri = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  const thumbUri = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
   return (
     <TouchableOpacity
-      onPress={() => Linking.openURL(`https://www.youtube.com/watch?v=${videoId}`)}
+      onPress={() =>
+        Linking.openURL(`https://www.youtube.com/watch?v=${videoId}`)
+      }
       activeOpacity={0.85}
       className="mb-4 rounded-xl overflow-hidden bg-black"
       style={{ height: 200 }}
     >
-      <Image source={{ uri: thumbUri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+      <Image
+        source={{ uri: thumbUri }}
+        style={{ width: "100%", height: "100%" }}
+        resizeMode="cover"
+      />
       <View
         style={{
-          position: 'absolute',
-          top: 0, left: 0, right: 0, bottom: 0,
-          justifyContent: 'center',
-          alignItems: 'center',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <View
@@ -42,113 +66,138 @@ function YouTubeThumbnail({ videoId }: { videoId: string }) {
             width: 56,
             height: 56,
             borderRadius: 28,
-            backgroundColor: 'rgba(0,0,0,0.65)',
-            justifyContent: 'center',
-            alignItems: 'center',
+            backgroundColor: "rgba(0,0,0,0.65)",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Play size={24} color="white" fill="white" />
         </View>
       </View>
     </TouchableOpacity>
-  );
+  )
 }
 
 function parseDateStr(date: string | Date): string {
   if (date instanceof Date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
   }
-  return String(date).split('T')[0];
+  return String(date).split("T")[0]
 }
 
 function formatTime(t: string): string {
-  return t.substring(0, 5);
+  return t.substring(0, 5)
 }
 
 function getShortDayName(dateStr: string): string {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return names[new Date(y, m - 1, d).getDay()];
+  const [y, m, d] = dateStr.split("-").map(Number)
+  const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  return names[new Date(y, m - 1, d).getDay()]
 }
 
 function formatOrdinalDate(dateStr: string): string {
-  const [, m, d] = dateStr.split('-').map(Number);
-  const months = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'];
-  const suffix = d === 1 || d === 21 || d === 31 ? 'st'
-    : d === 2 || d === 22 ? 'nd'
-    : d === 3 || d === 23 ? 'rd'
-    : 'th';
-  return `${d}${suffix} of ${months[m - 1]}`;
+  const [, m, d] = dateStr.split("-").map(Number)
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
+  const suffix =
+    d === 1 || d === 21 || d === 31
+      ? "st"
+      : d === 2 || d === 22
+        ? "nd"
+        : d === 3 || d === 23
+          ? "rd"
+          : "th"
+  return `${d}${suffix} of ${months[m - 1]}`
 }
 
-
 export default function ArtistProfileScreen() {
-  const { username } = useLocalSearchParams<{ username: string }>();
-  const router = useRouter();
-  const { isGoing, toggle } = useSavedEvents();
+  const { username } = useLocalSearchParams<{ username: string }>()
+  const router = useRouter()
+  const { isGoing, toggle } = useSavedEvents()
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['artist', username],
+    queryKey: ["artist", username],
     queryFn: () => fetchArtist(username),
     enabled: !!username,
-  });
+  })
 
   const upcomingWorkshops = useMemo(() => {
-    if (!data?.workshops?.upcoming) return [];
+    if (!data?.workshops?.upcoming) return []
     return [...data.workshops.upcoming].sort((a, b) =>
       parseDateStr(a.date).localeCompare(parseDateStr(b.date)),
-    );
-  }, [data]);
+    )
+  }, [data])
 
   const pastWorkshops = useMemo(() => {
-    if (!data?.workshops?.past) return [];
+    if (!data?.workshops?.past) return []
     return [...data.workshops.past].sort((a, b) =>
       parseDateStr(b.date).localeCompare(parseDateStr(a.date)),
-    );
-  }, [data]);
+    )
+  }, [data])
 
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-pc-bg">
         <ActivityIndicator color={PC.accent} className="mt-[60px]" />
       </SafeAreaView>
-    );
+    )
   }
 
   if (isError || !data) {
     return (
       <SafeAreaView className="flex-1 bg-pc-bg">
-        <TouchableOpacity onPress={() => router.back()} className="flex-row items-center px-5 pt-4 pb-2">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          className="flex-row items-center px-5 pt-4 pb-2"
+        >
           <ChevronLeft size={18} color={PC.accent} />
-          <Text className="text-pc-accent text-base font-semibold ml-0.5">Artists</Text>
+          <Text className="text-pc-accent text-base font-semibold ml-0.5">
+            Artists
+          </Text>
         </TouchableOpacity>
         <Text className="text-pc-textMuted text-[15px] text-center mt-10">
           Could not load artist profile.
         </Text>
       </SafeAreaView>
-    );
+    )
   }
 
-  const { user, props } = data;
-  const displayName = user.displayName || user.username;
-  const initials = getInitials(displayName);
-  const avatarBg = getAvatarBgColor(user.username);
+  const { user, props } = data
+  const displayName = user.displayName || user.username
+  const initials = getInitials(displayName)
+  const avatarBg = getAvatarBgColor(user.username)
 
   return (
     <SafeAreaView className="flex-1 bg-pc-bg">
       {/* Warm radial glow behind the header */}
       <LinearGradient
-        colors={['#3D1A04', '#1A0A02', PC.bg]}
+        colors={["#3D1A04", "#1A0A02", PC.bg]}
         locations={[0, 0.5, 1]}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 420 }}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 420 }}
         pointerEvents="none"
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Back button */}
-        <TouchableOpacity onPress={() => router.back()} className="flex-row items-center px-5 pt-4 pb-2">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          className="flex-row items-center px-5 pt-4 pb-2"
+        >
           <ChevronLeft size={18} color={PC.accent} />
-          <Text className="text-pc-accent text-base font-semibold ml-0.5">Artists</Text>
+          <Text className="text-pc-accent text-base font-semibold ml-0.5">
+            Artists
+          </Text>
         </TouchableOpacity>
 
         {/* Avatar */}
@@ -163,7 +212,9 @@ export default function ArtistProfileScreen() {
               className="w-[88px] h-[88px] rounded-[44px] justify-center items-center mb-3.5"
               style={{ backgroundColor: avatarBg }}
             >
-              <Text className="text-pc-accent text-[28px] font-bold">{initials}</Text>
+              <Text className="text-pc-accent text-[28px] font-bold">
+                {initials}
+              </Text>
             </View>
           )}
           <Text className="text-pc-text text-[26px] font-extrabold mb-1 text-center">
@@ -177,12 +228,16 @@ export default function ArtistProfileScreen() {
           {user.location ? (
             <View className="flex-row items-center gap-1.5 mt-1.5">
               <Globe size={13} color={PC.textMuted} />
-              <Text className="text-pc-textMuted text-[13px]">{user.location}</Text>
+              <Text className="text-pc-textMuted text-[13px]">
+                {user.location}
+              </Text>
             </View>
           ) : null}
           {user.instagramHandle ? (
             <TouchableOpacity
-              onPress={() => Linking.openURL(`https://instagram.com/${user.instagramHandle}`)}
+              onPress={() =>
+                Linking.openURL(`https://instagram.com/${user.instagramHandle}`)
+              }
               className="flex-row items-center gap-1.5 mt-2"
               activeOpacity={0.7}
             >
@@ -203,25 +258,48 @@ export default function ArtistProfileScreen() {
                   width: 16,
                   height: 16,
                   borderRadius: 8,
-                  backgroundColor: '#FF424D',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  backgroundColor: "#FF424D",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <Text style={{ color: '#fff', fontSize: 10, fontWeight: '800', lineHeight: 12 }}>P</Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: "800",
+                    lineHeight: 12,
+                  }}
+                >
+                  P
+                </Text>
               </View>
-              <Text style={{ color: '#FF424D' }} className="text-[13px]">Patreon</Text>
+              <Text style={{ color: "#FF424D" }} className="text-[13px]">
+                Patreon
+              </Text>
             </TouchableOpacity>
           ) : null}
-          {(user.isInstructor || user.isAdmin || user.username === 'the_flow_wizard') ? (
+          {user.isInstructor ||
+          user.isAdmin ||
+          user.username === "the_flow_wizard" ? (
             <View className="flex-row items-center gap-2 mt-2.5">
               {user.isInstructor ? (
-                <View className="border rounded-md px-2 py-0.5" style={{ borderColor: '#DC2626' }}>
-                  <Text className="text-xs font-semibold" style={{ color: '#DC2626' }}>Instructor</Text>
+                <View
+                  className="border rounded-md px-2 py-0.5"
+                  style={{ borderColor: "#DC2626" }}
+                >
+                  <Text
+                    className="text-xs font-semibold"
+                    style={{ color: "#DC2626" }}
+                  >
+                    Instructor
+                  </Text>
                 </View>
               ) : null}
               {user.isAdmin ? <Shield size={18} color="#3B82F6" /> : null}
-              {user.username === 'the_flow_wizard' ? <Code size={18} color="#22D3EE" /> : null}
+              {user.username === "the_flow_wizard" ? (
+                <Code size={18} color="#22D3EE" />
+              ) : null}
             </View>
           ) : null}
         </View>
@@ -230,7 +308,10 @@ export default function ArtistProfileScreen() {
         {props.length > 0 && (
           <View className="flex-row flex-wrap justify-center px-5 gap-2 mb-1">
             {props.map((p) => (
-              <View key={p.propName} className="border border-pc-accent rounded-2xl px-3 py-1">
+              <View
+                key={p.propName}
+                className="border border-pc-accent rounded-2xl px-3 py-1"
+              >
                 <Text className="text-pc-accent text-[13px] font-medium">
                   {p.propName.toLowerCase()}
                 </Text>
@@ -247,7 +328,9 @@ export default function ArtistProfileScreen() {
             <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider mb-3">
               ABOUT
             </Text>
-            <Text className="text-pc-textSecondary text-[15px] leading-[23px]">{user.bio}</Text>
+            <Text className="text-pc-textSecondary text-[15px] leading-[23px]">
+              {user.bio}
+            </Text>
           </View>
         ) : null}
 
@@ -257,11 +340,11 @@ export default function ArtistProfileScreen() {
         {(() => {
           const youtubeIds = (user.youtubeVideos ?? [])
             .map(extractYouTubeId)
-            .filter(Boolean) as string[];
+            .filter(Boolean) as string[]
           const vimeoIds = (user.vimeoVideos ?? [])
             .map(extractVimeoId)
-            .filter(Boolean) as string[];
-          if (youtubeIds.length === 0 && vimeoIds.length === 0) return null;
+            .filter(Boolean) as string[]
+          if (youtubeIds.length === 0 && vimeoIds.length === 0) return null
           return (
             <View className="px-5">
               <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider mb-3">
@@ -271,18 +354,22 @@ export default function ArtistProfileScreen() {
                 <YouTubeThumbnail key={id} videoId={id} />
               ))}
               {vimeoIds.map((id) => (
-                <View key={id} className="mb-4 rounded-xl overflow-hidden bg-black" style={{ height: 200 }}>
+                <View
+                  key={id}
+                  className="mb-4 rounded-xl overflow-hidden bg-black"
+                  style={{ height: 200 }}
+                >
                   <WebView
                     source={{ uri: getVimeoEmbedUrl(id) }}
                     allowsFullscreenVideo
                     mediaPlaybackRequiresUserAction
-                    style={{ flex: 1, backgroundColor: 'black' }}
+                    style={{ flex: 1, backgroundColor: "black" }}
                   />
                 </View>
               ))}
               <View className="h-px bg-pc-separator my-5 -mx-0" />
             </View>
-          );
+          )
         })()}
 
         {/* Workshops */}
@@ -291,11 +378,13 @@ export default function ArtistProfileScreen() {
             WORKSHOPS ({upcomingWorkshops.length})
           </Text>
           {upcomingWorkshops.length === 0 ? (
-            <Text className="text-pc-textMuted text-sm">No upcoming workshops</Text>
+            <Text className="text-pc-textMuted text-sm">
+              No upcoming workshops
+            </Text>
           ) : (
             upcomingWorkshops.map((workshop) => {
-              const dateStr = parseDateStr(workshop.date);
-              const going = isGoing(workshop.id);
+              const dateStr = parseDateStr(workshop.date)
+              const going = isGoing(workshop.id)
               return (
                 <View
                   key={workshop.id}
@@ -304,26 +393,43 @@ export default function ArtistProfileScreen() {
                 >
                   <View className="mb-2.5 gap-1">
                     <View className="flex-row items-center">
-                      <Calendar size={12} color={PC.textMuted} className="mr-1.5" />
+                      <Calendar
+                        size={12}
+                        color={PC.textMuted}
+                        className="mr-1.5"
+                      />
                       <Text className="text-pc-textMuted text-[13px]">
                         {getShortDayName(dateStr)}, {formatOrdinalDate(dateStr)}
                       </Text>
                     </View>
                     <View className="flex-row items-center">
-                      <Clock size={12} color={PC.textMuted} className="mr-1.5" />
+                      <Clock
+                        size={12}
+                        color={PC.textMuted}
+                        className="mr-1.5"
+                      />
                       <Text className="text-pc-textMuted text-[13px]">
-                        {formatTime(workshop.startTime)} – {formatTime(workshop.endTime)}
+                        {formatTime(workshop.startTime)} –{" "}
+                        {formatTime(workshop.endTime)}
                       </Text>
                     </View>
                     {workshop.location ? (
                       <View className="flex-row items-center">
-                        <MapPin size={12} color={PC.textMuted} className="mr-1.5" />
-                        <Text className="text-pc-textMuted text-[13px]">{workshop.location}</Text>
+                        <MapPin
+                          size={12}
+                          color={PC.textMuted}
+                          className="mr-1.5"
+                        />
+                        <Text className="text-pc-textMuted text-[13px]">
+                          {workshop.location}
+                        </Text>
                       </View>
                     ) : null}
                   </View>
                   <View className="flex-row justify-between items-center gap-3">
-                    <Text className="text-pc-text text-base font-bold flex-1">{workshop.title}</Text>
+                    <Text className="text-pc-text text-base font-bold flex-1">
+                      {workshop.title}
+                    </Text>
                     <TouchableOpacity
                       onPress={() =>
                         toggle({
@@ -337,19 +443,21 @@ export default function ArtistProfileScreen() {
                         })
                       }
                       className={`rounded-lg px-4 py-2 ${
-                        going ? 'bg-transparent border border-pc-accent' : 'bg-pc-accent'
+                        going
+                          ? "bg-transparent border border-pc-accent"
+                          : "bg-pc-accent"
                       }`}
                       activeOpacity={0.8}
                     >
                       <Text
-                        className={`text-sm font-bold ${going ? 'text-pc-accent' : 'text-black'}`}
+                        className={`text-sm font-bold ${going ? "text-pc-accent" : "text-black"}`}
                       >
-                        {going ? '✓ Joined' : 'Join'}
+                        {going ? "✓ Added to schedule" : "Add to schedule"}
                       </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-              );
+              )
             })
           )}
         </View>
@@ -361,17 +469,29 @@ export default function ArtistProfileScreen() {
               PAST WORKSHOPS ({pastWorkshops.length})
             </Text>
             {pastWorkshops.map((workshop) => {
-              const dateStr = parseDateStr(workshop.date);
-              const [y, m, d] = dateStr.split('-').map(Number);
-              const formatted = new Date(y, m - 1, d).toLocaleDateString('en-US', {
-                month: 'short', day: 'numeric', year: 'numeric',
-              });
+              const dateStr = parseDateStr(workshop.date)
+              const [y, m, d] = dateStr.split("-").map(Number)
+              const formatted = new Date(y, m - 1, d).toLocaleDateString(
+                "en-US",
+                {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                },
+              )
               return (
-                <View key={workshop.id} className="flex-row justify-between mb-2">
-                  <Text className="text-pc-text text-[14px] flex-1 mr-3">{workshop.title}</Text>
-                  <Text className="text-pc-textMuted text-[13px]">{formatted}</Text>
+                <View
+                  key={workshop.id}
+                  className="flex-row justify-between mb-2"
+                >
+                  <Text className="text-pc-text text-[14px] flex-1 mr-3">
+                    {workshop.title}
+                  </Text>
+                  <Text className="text-pc-textMuted text-[13px]">
+                    {formatted}
+                  </Text>
                 </View>
-              );
+              )
             })}
           </View>
         )}
@@ -379,5 +499,5 @@ export default function ArtistProfileScreen() {
         <View className="h-10" />
       </ScrollView>
     </SafeAreaView>
-  );
+  )
 }
