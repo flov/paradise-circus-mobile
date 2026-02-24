@@ -12,6 +12,7 @@ export interface SavedEventSnapshot {
   location: string | null;
   instructor: string | null;
   instructorDisplayName?: string | null;
+  instructorAvatarUrl?: string | null;
   description?: string | null;
 }
 
@@ -24,6 +25,7 @@ export interface SchedulableEvent {
   location: string | null;
   instructor?: string | null;
   instructorDisplayName?: string | null;
+  instructorAvatarUrl?: string | null;
   description?: string | null;
 }
 
@@ -40,6 +42,7 @@ function toSnapshot(event: SchedulableEvent): SavedEventSnapshot {
     location: event.location,
     instructor: event.instructor ?? null,
     instructorDisplayName: event.instructorDisplayName,
+    instructorAvatarUrl: event.instructorAvatarUrl,
     description: event.description,
   };
 }

@@ -8,6 +8,7 @@ export interface TimetableEvent {
   instructor: string | null;
   instructorId: number | null;
   instructorDisplayName: string | null;
+  instructorAvatarUrl: string | null;
   date: string;
   startTime: string;
   endTime: string;
@@ -25,6 +26,7 @@ export interface TimetableEvent {
     username: string;
     bio: string | null;
     instagramHandle: string | null;
+    avatarImageUrl: string | null;
   } | null;
   isBlocked?: boolean;
 }

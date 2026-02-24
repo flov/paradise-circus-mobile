@@ -26,12 +26,12 @@ export function getWeekDates(weekOffset: number): Date[] {
   const currentDay = now.getDay();
   const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
 
-  const monday = new Date(now);
+  const monday = new Date(now.getTime());
   monday.setDate(now.getDate() + mondayOffset + weekOffset * 7);
 
   const dates: Date[] = [];
   for (let i = 0; i < 7; i++) {
-    const date = new Date(monday);
+    const date = new Date(monday.getTime());
     date.setDate(monday.getDate() + i);
     dates.push(date);
   }

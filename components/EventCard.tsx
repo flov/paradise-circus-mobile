@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { View, Text, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity, Image } from "react-native"
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -33,6 +33,7 @@ export default function EventCard({
 }: Props) {
   const instructorName = event.instructorDisplayName || event.instructor
   const borderColor = getEventBorderColor(event.id)
+  const avatarUrl = event.instructorAvatarUrl
 
   const progress = useSharedValue(0)
 
@@ -73,11 +74,21 @@ export default function EventCard({
             {formatTime(event.startTime)} – {formatTime(event.endTime)}
           </Text>
         </View>
-        {isGoing && (
-          <View className="bg-pc-accent rounded-md px-2 py-0.5">
-            <Text className="text-black text-[11px] font-bold">✓ Joined</Text>
-          </View>
-        )}
+        <View className="flex-row items-center gap-2">
+          {isGoing && (
+            <View className="bg-pc-accent rounded-md px-2 py-0.5">
+              <Text className="text-black text-[11px] font-bold">
+                ✓ On Schedule
+              </Text>
+            </View>
+          )}
+          {avatarUrl && (
+            <Image
+              source={{ uri: avatarUrl }}
+              style={{ width: 28, height: 28, borderRadius: 14 }}
+            />
+          )}
+        </View>
       </View>
 
       <Text className="text-pc-text text-[17px] font-bold mb-2">
@@ -103,7 +114,7 @@ export default function EventCard({
       </View>
 
       {/* Expandable content — always rendered, height+opacity animated */}
-      <Animated.View style={[expandStyle, { overflow: 'hidden' }]}>
+      <Animated.View style={[expandStyle, { overflow: "hidden" }]}>
         <View className="mt-2">
           <View className="h-px bg-pc-separator my-2.5" />
           {event.description ? (
