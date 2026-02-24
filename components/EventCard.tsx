@@ -68,7 +68,7 @@ export default function EventCard({
       onPress={onPress}
       activeOpacity={0.85}
       className="bg-pc-card rounded-xl border-l-[3px] p-3.5 mb-3"
-      // style={{ borderLeftColor: borderColor }}
+      style={{ borderLeftColor: borderColor }}
     >
       {/* Header row */}
       <View className="flex-row justify-between items-center mb-1.5">
