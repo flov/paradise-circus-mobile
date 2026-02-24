@@ -173,6 +173,27 @@ export default function ArtistProfileScreen() {
               </Text>
             </TouchableOpacity>
           ) : null}
+          {user.patreonPage ? (
+            <TouchableOpacity
+              onPress={() => Linking.openURL(user.patreonPage!)}
+              className="flex-row items-center gap-1.5 mt-2"
+              activeOpacity={0.7}
+            >
+              <View
+                style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  backgroundColor: '#FF424D',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: '#fff', fontSize: 10, fontWeight: '800', lineHeight: 12 }}>P</Text>
+              </View>
+              <Text style={{ color: '#FF424D' }} className="text-[13px]">Patreon</Text>
+            </TouchableOpacity>
+          ) : null}
           {(user.isInstructor || user.isAdmin || user.username === 'the_flow_wizard') ? (
             <View className="flex-row items-center gap-2 mt-2.5">
               {user.isInstructor ? (
