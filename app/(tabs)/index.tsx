@@ -6,9 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   SafeAreaView,
-  Dimensions,
 } from "react-native"
-import ConfettiCannon from "react-native-confetti-cannon"
 import { ChevronLeft, ChevronRight } from "lucide-react-native"
 import { useQuery } from "@tanstack/react-query"
 import { fetchTimetable } from "@/lib/api"
@@ -104,12 +102,6 @@ export default function TimetableScreen() {
   })
 
   const { isGoing, toggle } = useSavedEvents()
-  const [showConfetti, setShowConfetti] = useState(false)
-  const { width, height } = Dimensions.get("window")
-
-  function triggerConfetti() {
-    setShowConfetti(true)
-  }
 
   // Group events by day index (Mon=0 ... Sun=6), sorted by startTime
   const eventsByDay = useMemo(() => {
@@ -134,29 +126,6 @@ export default function TimetableScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-pc-bg">
-      {showConfetti && (
-        <View
-          pointerEvents="none"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 9999,
-          }}
-        >
-          <ConfettiCannon
-            count={150}
-            origin={{ x: width / 2, y: height * 0.5 }}
-            explosionSpeed={350}
-            fallSpeed={3000}
-            fadeOut
-            autoStart
-            onAnimationEnd={() => setShowConfetti(false)}
-          />
-        </View>
-      )}
       <LinearGradient
         colors={["#3D1A04", "#1A0A02", PC.bg]}
         locations={[0, 0.5, 1]}
@@ -267,7 +236,6 @@ export default function TimetableScreen() {
               onPress={() => handleCardPress(event.id)}
               isGoing={isGoing(event.id)}
               onToggleSchedule={() => toggle(event)}
-              onAddConfetti={triggerConfetti}
             />
           ))}
         </View>

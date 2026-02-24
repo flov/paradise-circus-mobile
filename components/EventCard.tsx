@@ -19,7 +19,6 @@ interface Props {
   onPress: () => void
   isGoing: boolean
   onToggleSchedule: () => void
-  onAddConfetti?: () => void
 }
 
 function formatTime(t: string): string {
@@ -32,7 +31,6 @@ export default function EventCard({
   onPress,
   isGoing,
   onToggleSchedule,
-  onAddConfetti,
 }: Props) {
   const router = useRouter()
   const instructorName = event.instructorDisplayName || event.instructor
@@ -150,7 +148,6 @@ export default function EventCard({
           ) : null}
           <TouchableOpacity
             onPress={() => {
-              if (!isGoing) onAddConfetti?.()
               onToggleSchedule()
             }}
             className={`rounded-[10px] py-3 items-center ${
