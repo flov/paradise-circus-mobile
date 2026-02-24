@@ -11,11 +11,47 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, Calendar, Clock, MapPin, Instagram } from 'lucide-react-native';
+import { ChevronLeft, Calendar, Clock, MapPin, Instagram, Play } from 'lucide-react-native';
 import { fetchArtist } from '@/lib/api';
 import { useSavedEvents } from '@/lib/schedule';
 import { PC, getAvatarBgColor, getEventBorderColor } from '@/constants/Colors';
-import { getInitials } from '@/lib/utils';
+import { getInitials, extractYouTubeId, extractVimeoId, getVimeoEmbedUrl } from '@/lib/utils';
+import { WebView } from 'react-native-webview';
+
+function YouTubeThumbnail({ videoId }: { videoId: string }) {
+  const thumbUri = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  return (
+    <TouchableOpacity
+      onPress={() => Linking.openURL(`https://www.youtube.com/watch?v=${videoId}`)}
+      activeOpacity={0.85}
+      className="mb-4 rounded-xl overflow-hidden bg-black"
+      style={{ height: 200 }}
+    >
+      <Image source={{ uri: thumbUri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+      <View
+        style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <View
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            backgroundColor: 'rgba(0,0,0,0.65)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Play size={24} color="white" fill="white" />
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+}
 
 function parseDateStr(date: string | Date): string {
   if (date instanceof Date) {
@@ -152,6 +188,38 @@ export default function ArtistProfileScreen() {
         ) : null}
 
         <View className="h-px bg-pc-separator mx-5 my-5" />
+
+        {/* Videos */}
+        {(() => {
+          const youtubeIds = (user.youtubeVideos ?? [])
+            .map(extractYouTubeId)
+            .filter(Boolean) as string[];
+          const vimeoIds = (user.vimeoVideos ?? [])
+            .map(extractVimeoId)
+            .filter(Boolean) as string[];
+          if (youtubeIds.length === 0 && vimeoIds.length === 0) return null;
+          return (
+            <View className="px-5">
+              <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider mb-3">
+                VIDEOS ({youtubeIds.length + vimeoIds.length})
+              </Text>
+              {youtubeIds.map((id) => (
+                <YouTubeThumbnail key={id} videoId={id} />
+              ))}
+              {vimeoIds.map((id) => (
+                <View key={id} className="mb-4 rounded-xl overflow-hidden bg-black" style={{ height: 200 }}>
+                  <WebView
+                    source={{ uri: getVimeoEmbedUrl(id) }}
+                    allowsFullscreenVideo
+                    mediaPlaybackRequiresUserAction
+                    style={{ flex: 1, backgroundColor: 'black' }}
+                  />
+                </View>
+              ))}
+              <View className="h-px bg-pc-separator my-5 -mx-0" />
+            </View>
+          );
+        })()}
 
         {/* Workshops */}
         <View className="px-5">
