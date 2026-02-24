@@ -48,6 +48,7 @@ export interface ArtistListItem {
   videoCount: number;
   bio?: string | null;
   instagramHandle?: string | null;
+  patreonPage?: string | null;
   availableForPerformances: boolean;
   performanceStyle?: string | null;
 }

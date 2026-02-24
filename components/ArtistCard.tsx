@@ -27,11 +27,11 @@ export default function ArtistCard({ artist, onPress }: Props) {
       {artist.avatar ? (
         <Image
           source={{ uri: artist.avatar }}
-          className="w-[52px] h-[52px] rounded-[26px] mr-3.5"
+          className="w-[62px] h-[62px] rounded-[31px] mr-3.5"
         />
       ) : (
         <View
-          className="w-[52px] h-[52px] rounded-[26px] justify-center items-center mr-3.5"
+          className="w-[62px] h-[62px] rounded-[31px] justify-center items-center mr-3.5"
           style={{ backgroundColor: avatarBg }}
         >
           <Text className="text-pc-accent text-[17px] font-bold">
@@ -82,6 +82,20 @@ export default function ArtistCard({ artist, onPress }: Props) {
             <>
               <Video size={20} color={PC.purple} />
             </>
+          ) : null}
+          {artist.patreonPage ? (
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                backgroundColor: '#FF424D',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ color: '#fff', fontSize: 11, fontWeight: '800', lineHeight: 13 }}>P</Text>
+            </View>
           ) : null}
           {artist.bio ? <FileText size={20} color={PC.purple} /> : null}
         </View>
