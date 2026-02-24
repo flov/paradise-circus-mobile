@@ -14,7 +14,7 @@ export default function ArtistCard({ artist, onPress }: Props) {
   const displayName = artist.name || artist.username
   const initials = getInitials(displayName)
   const avatarBg = getAvatarBgColor(artist.username)
-  const specialty = artist.performanceStyle || null
+  const propNames = artist.props.length > 0 ? artist.props.map((p) => p.name).join(" · ") : null
 
   return (
     <TouchableOpacity
@@ -41,18 +41,31 @@ export default function ArtistCard({ artist, onPress }: Props) {
 
       {/* Info */}
       <View className="flex-1">
-        <Text className="text-pc-text text-base font-bold mb-0.5">
+        <Text
+          className="text-pc-text text-base mb-0.5"
+          style={{ fontFamily: 'JosefinSans_700Bold' }}
+        >
           {displayName}
         </Text>
-        {specialty ? (
-          <Text
-            className="text-pc-textMuted text-[13px] mb-1.5"
-            numberOfLines={1}
-          >
-            {specialty}
+        {propNames ? (
+          <Text className="text-pc-textMuted text-[13px] mb-1.5">
+            {propNames}
           </Text>
         ) : null}
         <View className="flex-row items-center gap-2">
+          {artist.isInstructor ? (
+            <View
+              className="self-start border rounded-md px-2 py-0.5"
+              style={{ borderColor: PC.instructor }}
+            >
+              <Text
+                className="text-xs font-semibold"
+                style={{ color: PC.instructor }}
+              >
+                Instructor
+              </Text>
+            </View>
+          ) : null}
           {artist.workshopCount > 0 ? (
             <View className="self-start border border-pc-accent rounded-md px-2 py-0.5">
               <Text className="text-pc-accent text-xs font-semibold">

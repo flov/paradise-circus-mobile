@@ -1,24 +1,62 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Clock, MapPin } from 'lucide-react-native';
-import { PC, getEventBorderColor } from '@/constants/Colors';
-import type { TimetableEvent } from '@/lib/types';
+import React, { useEffect } from "react"
+import { View, Text, TouchableOpacity } from "react-native"
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+  interpolate,
+  Extrapolation,
+} from "react-native-reanimated"
+import { Clock, MapPin } from "lucide-react-native"
+import { PC, getEventBorderColor } from "@/constants/Colors"
+import type { TimetableEvent } from "@/lib/types"
 
 interface Props {
-  event: TimetableEvent;
-  isExpanded: boolean;
-  onPress: () => void;
-  isGoing: boolean;
-  onToggleSchedule: () => void;
+  event: TimetableEvent
+  isExpanded: boolean
+  onPress: () => void
+  isGoing: boolean
+  onToggleSchedule: () => void
 }
 
 function formatTime(t: string): string {
-  return t.substring(0, 5);
+  return t.substring(0, 5)
 }
 
-export default function EventCard({ event, isExpanded, onPress, isGoing, onToggleSchedule }: Props) {
-  const instructorName = event.instructorDisplayName || event.instructor;
-  const borderColor = getEventBorderColor(event.id);
+export default function EventCard({
+  event,
+  isExpanded,
+  onPress,
+  isGoing,
+  onToggleSchedule,
+}: Props) {
+  const instructorName = event.instructorDisplayName || event.instructor
+  const borderColor = getEventBorderColor(event.id)
+
+  const progress = useSharedValue(0)
+
+  useEffect(() => {
+    progress.value = withTiming(isExpanded ? 1 : 0, {
+      duration: 480,
+      easing: Easing.out(Easing.cubic),
+    })
+  }, [isExpanded])
+
+  const expandStyle = useAnimatedStyle(() => ({
+    maxHeight: interpolate(
+      progress.value,
+      [0, 1],
+      [0, 400],
+      Extrapolation.CLAMP,
+    ),
+    opacity: interpolate(
+      progress.value,
+      [0, 0.5, 1],
+      [0, 0.7, 1],
+      Extrapolation.CLAMP,
+    ),
+  }))
 
   return (
     <TouchableOpacity
@@ -30,7 +68,7 @@ export default function EventCard({ event, isExpanded, onPress, isGoing, onToggl
       {/* Header row */}
       <View className="flex-row justify-between items-center mb-1.5">
         <View className="flex-row items-center">
-          <Clock size={13} color={PC.textMuted} className="mr-1" />
+          <Clock size={13} color={PC.textMuted} style={{ marginRight: 4 }} />
           <Text className="text-pc-textMuted text-[13px]">
             {formatTime(event.startTime)} – {formatTime(event.endTime)}
           </Text>
@@ -42,24 +80,30 @@ export default function EventCard({ event, isExpanded, onPress, isGoing, onToggl
         )}
       </View>
 
-      <Text className="text-pc-text text-[17px] font-bold mb-2">{event.title}</Text>
+      <Text className="text-pc-text text-[17px] font-bold mb-2">
+        {event.title}
+      </Text>
 
       <View className="flex-row justify-between items-center">
         {instructorName ? (
-          <Text className="text-pc-accent text-sm font-medium flex-1">{instructorName}</Text>
+          <Text className="text-pc-accent text-sm font-medium flex-1">
+            {instructorName}
+          </Text>
         ) : (
           <View />
         )}
         {event.location ? (
           <View className="flex-row items-center">
-            <MapPin size={12} color={PC.textMuted} className="mr-1" />
-            <Text className="text-pc-textMuted text-[13px]">{event.location}</Text>
+            <MapPin size={12} color={PC.textMuted} style={{ marginRight: 4 }} />
+            <Text className="text-pc-textMuted text-[13px]">
+              {event.location}
+            </Text>
           </View>
         ) : null}
       </View>
 
-      {/* Expanded content */}
-      {isExpanded && (
+      {/* Expandable content — always rendered, height+opacity animated */}
+      <Animated.View style={[expandStyle, { overflow: 'hidden' }]}>
         <View className="mt-2">
           <View className="h-px bg-pc-separator my-2.5" />
           {event.description ? (
@@ -70,18 +114,20 @@ export default function EventCard({ event, isExpanded, onPress, isGoing, onToggl
           <TouchableOpacity
             onPress={onToggleSchedule}
             className={`rounded-[10px] py-3 items-center ${
-              isGoing ? 'bg-pc-accentDanger border border-[#8B2020]' : 'bg-pc-accent'
+              isGoing
+                ? "bg-pc-accentDanger border border-[#8B2020]"
+                : "bg-pc-accent"
             }`}
             activeOpacity={0.8}
           >
             <Text
-              className={`text-[15px] font-bold ${isGoing ? 'text-red-500' : 'text-black'}`}
+              className={`text-[15px] font-bold ${isGoing ? "text-red-500" : "text-black"}`}
             >
-              {isGoing ? '× Remove from Schedule' : '+ Add to My Schedule'}
+              {isGoing ? "× Remove from Schedule" : "+ Add to My Schedule"}
             </Text>
           </TouchableOpacity>
         </View>
-      )}
+      </Animated.View>
     </TouchableOpacity>
-  );
+  )
 }

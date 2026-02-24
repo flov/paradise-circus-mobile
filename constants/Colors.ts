@@ -27,6 +27,7 @@ export const PC = {
   textMuted: '#8A8078',
   textSecondary: '#C0B8B0',
   separator: '#2A2420',
+  instructor: '#DC2626',
   instagram: '#E1306C',
   purple: '#A855F7',
 } as const;

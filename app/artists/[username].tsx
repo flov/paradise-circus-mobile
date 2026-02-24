@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   SafeAreaView,
+  Image,
+  Linking,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, Calendar, Clock, MapPin } from 'lucide-react-native';
+import { ChevronLeft, Calendar, Clock, MapPin, Instagram } from 'lucide-react-native';
 import { fetchArtist } from '@/lib/api';
 import { useSavedEvents } from '@/lib/schedule';
 import { PC, getAvatarBgColor, getEventBorderColor } from '@/constants/Colors';
@@ -89,12 +91,19 @@ export default function ArtistProfileScreen() {
 
         {/* Avatar */}
         <View className="items-center pt-5 pb-4 px-5">
-          <View
-            className="w-[88px] h-[88px] rounded-[44px] justify-center items-center mb-3.5"
-            style={{ backgroundColor: avatarBg }}
-          >
-            <Text className="text-pc-accent text-[28px] font-bold">{initials}</Text>
-          </View>
+          {user.avatarImageUrl ? (
+            <Image
+              source={{ uri: user.avatarImageUrl }}
+              className="w-[88px] h-[88px] rounded-[44px] mb-3.5"
+            />
+          ) : (
+            <View
+              className="w-[88px] h-[88px] rounded-[44px] justify-center items-center mb-3.5"
+              style={{ backgroundColor: avatarBg }}
+            >
+              <Text className="text-pc-accent text-[28px] font-bold">{initials}</Text>
+            </View>
+          )}
           <Text className="text-pc-text text-[26px] font-extrabold mb-1 text-center">
             {displayName}
           </Text>
@@ -102,6 +111,18 @@ export default function ArtistProfileScreen() {
             <Text className="text-pc-textMuted text-[15px] text-center">
               {user.performanceStyle}
             </Text>
+          ) : null}
+          {user.instagramHandle ? (
+            <TouchableOpacity
+              onPress={() => Linking.openURL(`https://instagram.com/${user.instagramHandle}`)}
+              className="flex-row items-center gap-1.5 mt-2"
+              activeOpacity={0.7}
+            >
+              <Instagram size={14} color={PC.instagram} />
+              <Text style={{ color: PC.instagram }} className="text-[13px]">
+                @{user.instagramHandle}
+              </Text>
+            </TouchableOpacity>
           ) : null}
         </View>
 
