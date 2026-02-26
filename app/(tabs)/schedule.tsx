@@ -57,7 +57,7 @@ export default function MyScheduleScreen() {
         <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
           PARADISE CIRCUS
         </Text>
-        <Text className="text-pc-text text-[30px] font-extrabold mb-1">My Schedule</Text>
+        <Text className="text-pc-text text-[30px] font-rye mb-1">My Schedule</Text>
         <Text className="text-pc-textMuted text-sm">
           {savedEvents.length === 0
             ? 'No workshops saved yet'

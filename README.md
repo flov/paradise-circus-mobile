@@ -26,7 +26,7 @@ pnpm web       # Web (Expo web)
 
 ## Environment
 
-Create `.env.local` in the project root:
+Create `.env` or `.env.local` in the project root:
 
 ```
 EXPO_PUBLIC_API_BASE_URL=http://localhost:3000
@@ -34,6 +34,23 @@ EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
 ```
 
 `API_BASE_URL` defaults to `http://localhost:3000` if unset. The web app must be running for API calls to succeed.
+
+### Clerk production keys
+
+Clerk production keys (`pk_live_`) only work with your configured domain (`paradise-circus.app`). Native apps send requests from non-web origins (`exp://`, `paradisemobile://`), which triggers:
+
+- `Clerk: Production Keys are only allowed for domain "paradise-circus.app"`
+- `API Error: The Request HTTP Origin header must be equal to or a subdomain of the requesting URL`
+
+**For local development:** Use `pk_test_` from the Clerk Dashboard (Development instance). Test keys have no domain restriction.
+
+**For production builds:** Configure the Clerk Dashboard:
+
+1. Go to **Native applications**
+2. Register your app (Bundle ID: `app.paradise-circus`, scheme: `paradisemobile`)
+3. In **Allowlist for mobile SSO redirect**, add: `paradisemobile://callback` (or `app.paradise-circus://callback`)
+
+If errors persist, ensure your production domain is set and certificates are deployed in the Clerk Dashboard.
 
 ## Screens
 

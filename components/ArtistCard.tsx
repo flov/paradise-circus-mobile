@@ -43,8 +43,7 @@ export default function ArtistCard({ artist, onPress }: Props) {
       {/* Info */}
       <View className="flex-1">
         <Text
-          className="text-pc-text text-base mb-0.5"
-          style={{ fontFamily: "JosefinSans_700Bold" }}
+          className="text-pc-text text-base mb-0.5 font-rye"
         >
           {displayName}
         </Text>

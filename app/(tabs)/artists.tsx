@@ -124,7 +124,7 @@ export default function ArtistsScreen() {
               <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
                 PARADISE CIRCUS
               </Text>
-              <Text className="text-pc-text text-[30px] font-extrabold">Artists</Text>
+              <Text className="text-pc-text text-[30px] font-rye">Artists</Text>
             </View>
 
             {/* Search bar */}

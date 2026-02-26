@@ -138,7 +138,7 @@ export default function TimetableScreen() {
           <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
             PARADISE CIRCUS
           </Text>
-          <Text className="text-pc-text text-[30px] font-extrabold">
+          <Text className="text-pc-text text-[30px] font-rye">
             Weekly Timetable
           </Text>
         </View>

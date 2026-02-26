@@ -217,7 +217,7 @@ export default function ArtistProfileScreen() {
               </Text>
             </View>
           )}
-          <Text className="text-pc-text text-[26px] font-extrabold mb-1 text-center">
+          <Text className="text-pc-text text-[26px] font-rye mb-1 text-center">
             {displayName}
           </Text>
           {user.performanceStyle ? (

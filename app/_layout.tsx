@@ -5,6 +5,7 @@ import { tokenCache } from '@/lib/tokenCache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { JosefinSans_700Bold } from '@expo-google-fonts/josefin-sans';
+import { Rye_400Regular } from '@expo-google-fonts/rye';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -36,6 +37,7 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     JosefinSans_700Bold,
+    Rye_400Regular,
     ...FontAwesome.font,
   });
 

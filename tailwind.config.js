@@ -4,6 +4,9 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontFamily: {
+        rye: ['Rye_400Regular'],
+      },
       colors: {
         pc: {
           bg: "#0D0A07",

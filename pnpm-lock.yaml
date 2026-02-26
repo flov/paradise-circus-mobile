@@ -18,6 +18,9 @@ importers:
       '@expo-google-fonts/josefin-sans':
         specifier: ^0.4.2
         version: 0.4.2
+      '@expo-google-fonts/rye':
+        specifier: ^0.4.1
+        version: 0.4.1
       '@expo/vector-icons':
         specifier: ^15.0.3
         version: 15.0.3(expo-font@14.0.11(expo@54.0.33)(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(react@19.1.0)
@@ -754,6 +757,9 @@ packages:
 
   '@expo-google-fonts/josefin-sans@0.4.2':
     resolution: {integrity: sha512-aVxfoUme2j7eQlPQzfXLPhqn3rimsMPH7QcsBhSP2PqXAkAgcbBhmYd2X1XIrxvXTQBAIHVWE8AgmoVIcnrYmw==}
+
+  '@expo-google-fonts/rye@0.4.1':
+    resolution: {integrity: sha512-pPLkx/SeMaAZSeATiE58Eqf7xdK9vvJRXGagTCJhJl/glnS1MXWRo5bx0+x5U4IFY5aIn3lmnj3edZdv2WnrEw==}
 
   '@expo/cli@54.0.23':
     resolution: {integrity: sha512-km0h72SFfQCmVycH/JtPFTVy69w6Lx1cHNDmfLfQqgKFYeeHTjx7LVDP4POHCtNxFP2UeRazrygJhlh4zz498g==}
@@ -5236,6 +5242,8 @@ snapshots:
   '@emotion/weak-memoize@0.3.1': {}
 
   '@expo-google-fonts/josefin-sans@0.4.2': {}
+
+  '@expo-google-fonts/rye@0.4.1': {}
 
   '@expo/cli@54.0.23(bufferutil@4.1.0)(expo-router@6.0.23)(expo@54.0.33)(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(bufferutil@4.1.0)(react@19.1.0)(utf-8-validate@5.0.10))(utf-8-validate@5.0.10)':
     dependencies:
