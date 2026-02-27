@@ -9,7 +9,6 @@ import {
   Linking,
 } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useQuery } from "@tanstack/react-query"
 import {
@@ -182,13 +181,6 @@ export default function ArtistProfileScreen() {
 
   return (
     <View className="flex-1 bg-pc-bg">
-      {/* Warm radial glow behind the header */}
-      <LinearGradient
-        colors={["#3D1A04", "#1A0A02", PC.bg]}
-        locations={[0, 0.5, 1]}
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 420 }}
-        pointerEvents="none"
-      />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Back button */}
         <TouchableOpacity

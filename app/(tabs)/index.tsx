@@ -13,7 +13,6 @@ import { fetchTimetable } from "@/lib/api"
 import { getWeekDates, formatLocalDate } from "@/lib/utils"
 import { useSavedEvents } from "@/lib/schedule"
 import { PC } from "@/constants/Colors"
-import { LinearGradient } from "expo-linear-gradient"
 import EventCard from "@/components/EventCard"
 import type { TimetableEvent } from "@/lib/types"
 
@@ -127,12 +126,6 @@ export default function TimetableScreen() {
 
   return (
     <View className="flex-1 bg-pc-bg">
-      <LinearGradient
-        colors={["#3D1A04", "#1A0A02", PC.bg]}
-        locations={[0, 0.5, 1]}
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 420 }}
-        pointerEvents="none"
-      />
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Brand header */}
         <View className="px-5 pb-4" style={{ paddingTop: insets.top + 12 }}>

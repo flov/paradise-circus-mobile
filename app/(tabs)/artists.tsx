@@ -15,7 +15,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { fetchArtists } from '@/lib/api';
 import { PC } from '@/constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
 import ArtistCard from '@/components/ArtistCard';
 import type { ArtistListItem } from '@/lib/types';
 
@@ -108,12 +107,6 @@ export default function ArtistsScreen() {
 
   return (
     <View className="flex-1 bg-pc-bg">
-      <LinearGradient
-        colors={['#3D1A04', '#1A0A02', PC.bg]}
-        locations={[0, 0.5, 1]}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 420 }}
-        pointerEvents="none"
-      />
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.username}
