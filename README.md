@@ -35,6 +35,8 @@ EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
 
 `API_BASE_URL` defaults to `http://localhost:3000` if unset. The web app must be running for API calls to succeed.
 
+**Production:** Use `https://www.paradise-circus.app` (with `www`). The bare domain `paradise-circus.app` returns a 307 redirect to `www`, and that redirect response lacks CORS headers, causing fetch to fail in the mobile app.
+
 ### Clerk production keys
 
 Clerk production keys (`pk_live_`) only work with your configured domain (`paradise-circus.app`). Native apps send requests from non-web origins (`exp://`, `paradisemobile://`), which triggers:

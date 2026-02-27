@@ -279,6 +279,18 @@ export default function ArtistProfileScreen() {
               </Text>
             </TouchableOpacity>
           ) : null}
+          {user.website ? (
+            <TouchableOpacity
+              onPress={() => Linking.openURL(user.website!)}
+              className="flex-row items-center gap-1.5 mt-2"
+              activeOpacity={0.7}
+            >
+              <Globe size={14} color={PC.accent} />
+              <Text style={{ color: PC.accent }} className="text-[13px]">
+                {user.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+              </Text>
+            </TouchableOpacity>
+          ) : null}
           {user.isInstructor ||
           user.isAdmin ||
           user.username === "the_flow_wizard" ? (

@@ -51,6 +51,7 @@ export interface ArtistListItem {
   bio?: string | null;
   instagramHandle?: string | null;
   patreonPage?: string | null;
+  website?: string | null;
   availableForPerformances: boolean;
   performanceStyle?: string | null;
 }

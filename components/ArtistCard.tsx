@@ -1,6 +1,16 @@
 import React from "react"
 import { View, Text, TouchableOpacity, Image } from "react-native"
-import { ChevronRight, Instagram, FileText, Video, Shield, Code } from "lucide-react-native"
+import {
+  ChevronRight,
+  Instagram,
+  FileText,
+  Video,
+  Shield,
+  Code,
+  Globe,
+  GraduationCap,
+  CalendarDays,
+} from "lucide-react-native"
 import { PC, getAvatarBgColor } from "@/constants/Colors"
 import { getInitials } from "@/lib/utils"
 import type { ArtistListItem } from "@/lib/types"
@@ -42,9 +52,7 @@ export default function ArtistCard({ artist, onPress }: Props) {
 
       {/* Info */}
       <View className="flex-1">
-        <Text
-          className="text-pc-text text-base mb-0.5 font-rye"
-        >
+        <Text className="text-pc-text text-base mb-0.5 font-semibold">
           {displayName}
         </Text>
         {propNames ? (
@@ -54,24 +62,16 @@ export default function ArtistCard({ artist, onPress }: Props) {
         ) : null}
         <View className="flex-row items-center gap-2">
           {artist.isInstructor ? (
-            <View
-              className="self-start border rounded-md px-2 py-0.5"
-              style={{ borderColor: PC.instructor }}
-            >
-              <Text
-                className="text-xs font-semibold"
-                style={{ color: PC.instructor }}
-              >
-                Instructor
-              </Text>
-            </View>
+            <GraduationCap size={20} color={PC.instructor} />
           ) : null}
           {artist.workshopCount > 0 ? (
-            <View className="self-start border border-pc-accent rounded-md px-2 py-0.5">
-              <Text className="text-pc-accent text-xs font-semibold">
-                {artist.workshopCount}{" "}
-                {artist.workshopCount === 1 ? "workshop" : "workshops"}
-              </Text>
+            <View className="flex-row items-center gap-0.5">
+              {artist.workshopCount > 1 ? (
+                <Text className="text-pc-accent text-md ">
+                  {artist.workshopCount}
+                </Text>
+              ) : null}
+              <CalendarDays size={20} color={PC.accent} />
             </View>
           ) : null}
           {artist.instagramHandle ? (
@@ -88,17 +88,29 @@ export default function ArtistCard({ artist, onPress }: Props) {
                 width: 20,
                 height: 20,
                 borderRadius: 10,
-                backgroundColor: '#FF424D',
-                justifyContent: 'center',
-                alignItems: 'center',
+                backgroundColor: "#FF424D",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Text style={{ color: '#fff', fontSize: 11, fontWeight: '800', lineHeight: 13 }}>P</Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 11,
+                  fontWeight: "800",
+                  lineHeight: 13,
+                }}
+              >
+                P
+              </Text>
             </View>
           ) : null}
+          {artist.website ? <Globe size={20} color={PC.accent} /> : null}
           {artist.bio ? <FileText size={20} color={PC.purple} /> : null}
           {artist.isAdmin ? <Shield size={18} color="#3B82F6" /> : null}
-          {artist.username === 'the_flow_wizard' ? <Code size={18} color="#22D3EE" /> : null}
+          {artist.username === "the_flow_wizard" ? (
+            <Code size={18} color="#22D3EE" />
+          ) : null}
         </View>
       </View>
 
