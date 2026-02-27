@@ -65,6 +65,7 @@ export default function ArtistsScreen() {
   const { data: artists, isLoading, isError } = useQuery({
     queryKey: ['artists'],
     queryFn: fetchArtists,
+    staleTime: 5 * 60_000,
   });
 
   const allProps = useMemo(() => {

@@ -9,6 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
+import { fetchArtists } from '@/lib/api';
 import '../global.css';
 
 export {
@@ -45,6 +46,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      queryClient.prefetchQuery({ queryKey: ['artists'], queryFn: fetchArtists, staleTime: 5 * 60_000 });
     }
   }, [loaded]);
 
