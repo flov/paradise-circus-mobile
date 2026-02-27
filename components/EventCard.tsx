@@ -68,48 +68,56 @@ export default function EventCard({
       className="bg-pc-card rounded-xl border-l-[3px] p-3.5 mb-3"
       style={{ borderLeftColor: borderColor }}
     >
-      {/* Header row */}
-      <View className="flex-row justify-between items-center mb-1.5">
-        <View className="flex-row items-center">
-          <Clock size={13} color={PC.textMuted} style={{ marginRight: 4 }} />
-          <Text className="text-pc-textMuted text-[13px]">
-            {formatTime(event.startTime)} – {formatTime(event.endTime)}
-          </Text>
-        </View>
-        {isGoing && (
-          <View className="bg-pc-accent rounded-md px-2 py-0.5">
-            <Text className="text-black text-[11px] font-bold">
-              ✓ On Schedule
+      <View className="flex-row">
+        <View className="flex-1">
+          {/* Header row */}
+          <View className="flex-row items-center mb-1.5">
+            <Clock size={13} color={PC.textMuted} style={{ marginRight: 4 }} />
+            <Text className="text-pc-textMuted text-[13px]">
+              {formatTime(event.startTime)} – {formatTime(event.endTime)}
             </Text>
+            {isGoing && (
+              <View className="bg-pc-accent rounded-md px-2 py-0.5 ml-2">
+                <Text className="text-black text-[11px] font-bold">
+                  ✓ On Schedule
+                </Text>
+              </View>
+            )}
           </View>
-        )}
-      </View>
 
-      <Text className="text-pc-text text-[17px] font-bold mb-2">
-        {event.title}
-      </Text>
+          <Text className="text-pc-text text-[17px] font-bold mb-2">
+            {event.title}
+          </Text>
 
-      <View className="flex-row justify-between items-center">
-        <View className="flex-row items-center gap-2 flex-1 mr-2">
-          {avatarUrl && event.instructorProfile?.username ? (
-            <TouchableOpacity
-              onPress={() =>
-                router.push(`/artists/${event.instructorProfile!.username}`)
-              }
-              activeOpacity={0.8}
-              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-            >
-              <Image
-                source={{ uri: avatarUrl }}
-                style={{ width: 24, height: 24, borderRadius: 12 }}
-              />
-            </TouchableOpacity>
-          ) : avatarUrl ? (
+        </View>
+
+        {/* Avatar in top-right corner */}
+        {avatarUrl && event.instructorProfile?.username ? (
+          <TouchableOpacity
+            onPress={() =>
+              router.push(`/artists/${event.instructorProfile!.username}`)
+            }
+            activeOpacity={0.8}
+            hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            className="ml-3"
+          >
             <Image
               source={{ uri: avatarUrl }}
-              style={{ width: 24, height: 24, borderRadius: 12 }}
+              style={{ width: 36, height: 36, borderRadius: 18 }}
             />
-          ) : null}
+          </TouchableOpacity>
+        ) : avatarUrl ? (
+          <Image
+            source={{ uri: avatarUrl }}
+            className="ml-3"
+            style={{ width: 36, height: 36, borderRadius: 18 }}
+          />
+        ) : null}
+      </View>
+
+      {/* Instructor + location row — full width, outside the avatar column */}
+      <View className="flex-row items-center mt-1">
+        <View className="flex-row items-center gap-2 flex-1">
           {instructorName && event.instructorProfile?.username ? (
             <TouchableOpacity
               onPress={() =>
