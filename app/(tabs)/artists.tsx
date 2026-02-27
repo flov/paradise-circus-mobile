@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import { fetchArtists } from '@/lib/api';
 import { PC } from '@/constants/Colors';
 import ArtistCard from '@/components/ArtistCard';
+import { AnimatedItem } from '@/components/AnimatedItem';
 import type { ArtistListItem } from '@/lib/types';
 
 type SortOrder = 'newest' | 'az';
@@ -260,11 +261,13 @@ export default function ArtistsScreen() {
           </View>
         }
         contentContainerClassName="px-5 pb-8"
-        renderItem={({ item }: { item: ArtistListItem }) => (
-          <ArtistCard
-            artist={item}
-            onPress={() => router.push(`/artists/${item.username}`)}
-          />
+        renderItem={({ item, index }: { item: ArtistListItem; index: number }) => (
+          <AnimatedItem index={index}>
+            <ArtistCard
+              artist={item}
+              onPress={() => router.push(`/artists/${item.username}`)}
+            />
+          </AnimatedItem>
         )}
         ListEmptyComponent={
           !isLoading && !isError ? (

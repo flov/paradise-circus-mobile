@@ -14,6 +14,7 @@ import { getWeekDates, formatLocalDate } from "@/lib/utils"
 import { useSavedEvents } from "@/lib/schedule"
 import { PC } from "@/constants/Colors"
 import EventCard from "@/components/EventCard"
+import { AnimatedItem } from "@/components/AnimatedItem"
 import type { TimetableEvent } from "@/lib/types"
 
 const DAY_ABBREVS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -222,15 +223,16 @@ export default function TimetableScreen() {
               No workshops today
             </Text>
           )}
-          {selectedEvents.map((event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              isExpanded={expandedId === event.id}
-              onPress={() => handleCardPress(event.id)}
-              isGoing={isGoing(event.id)}
-              onToggleSchedule={() => toggle(event)}
-            />
+          {selectedEvents.map((event, index) => (
+            <AnimatedItem key={event.id} index={index}>
+              <EventCard
+                event={event}
+                isExpanded={expandedId === event.id}
+                onPress={() => handleCardPress(event.id)}
+                isGoing={isGoing(event.id)}
+                onToggleSchedule={() => toggle(event)}
+              />
+            </AnimatedItem>
           ))}
         </View>
       </ScrollView>

@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Clock, MapPin, X } from 'lucide-react-native';
 import { useSavedEvents, type SavedEventSnapshot } from '@/lib/schedule';
 import { PC, getEventBorderColor } from '@/constants/Colors';
+import { AnimatedItem } from '@/components/AnimatedItem';
 
 function parseDateDayName(dateStr: string): string {
   const [y, m, d] = dateStr.split('-').map(Number);
@@ -76,15 +77,18 @@ export default function MyScheduleScreen() {
           contentContainerClassName="px-5 pb-8"
           stickySectionHeadersEnabled={false}
           renderSectionHeader={({ section }) => (
-            <View className="flex-row items-center mt-5 mb-3 gap-2">
-              <View className="w-2 h-2 rounded-full bg-pc-accent" />
-              <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider">
-                {section.title}
-              </Text>
-              <View className="flex-1 h-px bg-pc-separator" />
-            </View>
+            <AnimatedItem index={0}>
+              <View className="flex-row items-center mt-5 mb-3 gap-2">
+                <View className="w-2 h-2 rounded-full bg-pc-accent" />
+                <Text className="text-pc-textMuted text-[11px] font-bold tracking-wider">
+                  {section.title}
+                </Text>
+                <View className="flex-1 h-px bg-pc-separator" />
+              </View>
+            </AnimatedItem>
           )}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
+            <AnimatedItem index={index + 1}>
             <View
               className="bg-pc-card rounded-xl border-l-[3px] p-3.5 mb-2.5 relative"
               style={{ borderLeftColor: getEventBorderColor(item.id) }}
@@ -124,6 +128,7 @@ export default function MyScheduleScreen() {
                 ) : null}
               </View>
             </View>
+            </AnimatedItem>
           )}
         />
       )}
