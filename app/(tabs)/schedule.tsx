@@ -4,8 +4,8 @@ import {
   Text,
   SectionList,
   TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Clock, MapPin, X } from 'lucide-react-native';
 import { useSavedEvents, type SavedEventSnapshot } from '@/lib/schedule';
 import { PC, getEventBorderColor } from '@/constants/Colors';
@@ -27,6 +27,7 @@ interface Section {
 }
 
 export default function MyScheduleScreen() {
+  const insets = useSafeAreaInsets();
   const { savedEvents, remove } = useSavedEvents();
 
   const sections: Section[] = useMemo(() => {
@@ -45,7 +46,7 @@ export default function MyScheduleScreen() {
   }, [savedEvents]);
 
   return (
-    <SafeAreaView className="flex-1 bg-pc-bg">
+    <View className="flex-1 bg-pc-bg">
       <LinearGradient
         colors={['#3D1A04', '#1A0A02', PC.bg]}
         locations={[0, 0.5, 1]}
@@ -53,7 +54,7 @@ export default function MyScheduleScreen() {
         pointerEvents="none"
       />
       {/* Brand header */}
-      <View className="px-5 pt-5 pb-4">
+      <View className="px-5 pb-4" style={{ paddingTop: insets.top + 12 }}>
         <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
           PARADISE CIRCUS
         </Text>
@@ -133,6 +134,6 @@ export default function MyScheduleScreen() {
           )}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }

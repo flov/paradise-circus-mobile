@@ -5,11 +5,11 @@ import {
   FlatList,
   TextInput,
   ActivityIndicator,
-  SafeAreaView,
   TouchableOpacity,
   Modal,
   Pressable,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Search, ChevronDown, X } from 'lucide-react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
@@ -52,6 +52,7 @@ function FilterChip({
 }
 
 export default function ArtistsScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [selectedProp, setSelectedProp] = useState<string | null>(null);
@@ -106,7 +107,7 @@ export default function ArtistsScreen() {
   }, [artists, query, selectedProp, sortOrder, filterInstructor, filterAdmin, filterVideos, filterBio]);
 
   return (
-    <SafeAreaView className="flex-1 bg-pc-bg">
+    <View className="flex-1 bg-pc-bg">
       <LinearGradient
         colors={['#3D1A04', '#1A0A02', PC.bg]}
         locations={[0, 0.5, 1]}
@@ -120,7 +121,7 @@ export default function ArtistsScreen() {
         ListHeaderComponent={
           <View>
             {/* Brand header */}
-            <View className="pt-5 pb-4">
+            <View className="pb-4" style={{ paddingTop: insets.top + 12 }}>
               <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
                 PARADISE CIRCUS
               </Text>
@@ -279,6 +280,6 @@ export default function ArtistsScreen() {
           ) : null
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }

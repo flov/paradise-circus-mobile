@@ -5,10 +5,10 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView,
   Image,
   Linking,
 } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useQuery } from "@tanstack/react-query"
@@ -123,6 +123,7 @@ function formatOrdinalDate(dateStr: string): string {
 }
 
 export default function ArtistProfileScreen() {
+  const insets = useSafeAreaInsets()
   const { username } = useLocalSearchParams<{ username: string }>()
   const router = useRouter()
   const { isGoing, toggle } = useSavedEvents()
@@ -149,15 +150,15 @@ export default function ArtistProfileScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-pc-bg">
+      <View className="flex-1 bg-pc-bg" style={{ paddingTop: insets.top }}>
         <ActivityIndicator color={PC.accent} className="mt-[60px]" />
-      </SafeAreaView>
+      </View>
     )
   }
 
   if (isError || !data) {
     return (
-      <SafeAreaView className="flex-1 bg-pc-bg">
+      <View className="flex-1 bg-pc-bg" style={{ paddingTop: insets.top }}>
         <TouchableOpacity
           onPress={() => router.back()}
           className="flex-row items-center px-5 pt-4 pb-2"
@@ -170,7 +171,7 @@ export default function ArtistProfileScreen() {
         <Text className="text-pc-textMuted text-[15px] text-center mt-10">
           Could not load artist profile.
         </Text>
-      </SafeAreaView>
+      </View>
     )
   }
 
@@ -180,7 +181,7 @@ export default function ArtistProfileScreen() {
   const avatarBg = getAvatarBgColor(user.username)
 
   return (
-    <SafeAreaView className="flex-1 bg-pc-bg">
+    <View className="flex-1 bg-pc-bg">
       {/* Warm radial glow behind the header */}
       <LinearGradient
         colors={["#3D1A04", "#1A0A02", PC.bg]}
@@ -192,7 +193,8 @@ export default function ArtistProfileScreen() {
         {/* Back button */}
         <TouchableOpacity
           onPress={() => router.back()}
-          className="flex-row items-center px-5 pt-4 pb-2"
+          className="flex-row items-center px-5 pb-2"
+          style={{ paddingTop: insets.top + 8 }}
         >
           <ChevronLeft size={18} color={PC.accent} />
           <Text className="text-pc-accent text-base font-semibold ml-0.5">
@@ -510,6 +512,6 @@ export default function ArtistProfileScreen() {
 
         <View className="h-10" />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }

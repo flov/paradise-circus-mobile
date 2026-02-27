@@ -5,8 +5,8 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView,
 } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { ChevronLeft, ChevronRight } from "lucide-react-native"
 import { useQuery } from "@tanstack/react-query"
 import { fetchTimetable } from "@/lib/api"
@@ -72,6 +72,7 @@ function formatWeekRange(monday: Date, sunday: Date): string {
 }
 
 export default function TimetableScreen() {
+  const insets = useSafeAreaInsets()
   const todayIndex = useMemo(getTodayIndex, [])
   const [weekOffset, setWeekOffset] = useState(0)
   const [selectedDay, setSelectedDay] = useState(todayIndex)
@@ -125,7 +126,7 @@ export default function TimetableScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-pc-bg">
+    <View className="flex-1 bg-pc-bg">
       <LinearGradient
         colors={["#3D1A04", "#1A0A02", PC.bg]}
         locations={[0, 0.5, 1]}
@@ -134,7 +135,7 @@ export default function TimetableScreen() {
       />
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Brand header */}
-        <View className="px-5 pt-5 pb-4">
+        <View className="px-5 pb-4" style={{ paddingTop: insets.top + 12 }}>
           <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
             PARADISE CIRCUS
           </Text>
@@ -240,6 +241,6 @@ export default function TimetableScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
