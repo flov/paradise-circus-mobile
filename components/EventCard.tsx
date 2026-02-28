@@ -76,6 +76,25 @@ export default function EventCard({
             <Text className="text-pc-textMuted text-[13px]">
               {formatTime(event.startTime)} – {formatTime(event.endTime)}
             </Text>
+            {event.level && event.level !== "All levels" && (
+              <View
+                className="rounded-md px-2 py-0.5 ml-2"
+                style={{
+                  backgroundColor:
+                    event.level === "Beginner"
+                      ? "#22c55e"
+                      : event.level === "Intermediate"
+                        ? "#eab308"
+                        : event.level === "Advanced"
+                          ? "#ef4444"
+                          : PC.separator,
+                }}
+              >
+                <Text className="text-black text-[11px] font-bold">
+                  {event.level}
+                </Text>
+              </View>
+            )}
             {isGoing && (
               <View className="bg-pc-accent rounded-md px-2 py-0.5 ml-2">
                 <Text className="text-black text-[11px] font-bold">
@@ -88,7 +107,6 @@ export default function EventCard({
           <Text className="text-pc-text text-[17px] font-bold mb-2">
             {event.title}
           </Text>
-
         </View>
 
         {/* Avatar in top-right corner */}
