@@ -16,6 +16,8 @@ export interface TimetableEvent {
   whatToBring: string | null;
   isWorkshop: boolean;
   propId: number | null;
+  level: string | null;
+  prop: { id: number; name: string } | null;
   isPublished: boolean;
   isRecurring: boolean;
   recurringSeriesId: string | null;

@@ -19,6 +19,7 @@ import { AnimatedItem } from "@/components/AnimatedItem"
 const heroImage = require("@/assets/images/hero.webp")
 
 const PHRASES = [
+  "Spin, breathe, connect",
   "The stage awaits — come as you are",
   "Unleash your inner performer",
   "Where passion meets performance",
@@ -27,6 +28,9 @@ const PHRASES = [
   "Where ordinary becomes extraordinary",
   "All levels are welcome",
   "Come curious, leave inspired",
+  "Every prop tells a story",
+  "Dance with fire, dance with friends",
+  "Flow is a conversation with gravity",
 ]
 
 const WORKSHOP_CATEGORIES: { name: string; icon: LucideIcon }[] = [
