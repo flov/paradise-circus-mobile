@@ -25,3 +25,9 @@ export async function fetchArtist(
   if (!res.ok) throw new Error(`Artist fetch failed: ${res.status}`);
   return res.json();
 }
+
+export async function fetchProps(): Promise<{ id: number; name: string }[]> {
+  const res = await fetch(`${API_BASE_URL}/api/props`);
+  if (!res.ok) throw new Error(`Props fetch failed: ${res.status}`);
+  return res.json();
+}

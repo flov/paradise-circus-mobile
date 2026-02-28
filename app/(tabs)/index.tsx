@@ -1,237 +1,245 @@
-import React, { useMemo, useState } from "react"
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native"
+import React, { useMemo } from "react"
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { ChevronLeft, ChevronRight } from "lucide-react-native"
 import { useQuery } from "@tanstack/react-query"
-import { fetchTimetable } from "@/lib/api"
-import { getWeekDates, formatLocalDate } from "@/lib/utils"
-import { useSavedEvents } from "@/lib/schedule"
+import {
+  Flame,
+  Circle,
+  Accessibility,
+  Drama,
+  Music,
+  type LucideIcon,
+} from "lucide-react-native"
+import { useRouter } from "expo-router"
+import { fetchTimetable, fetchArtists } from "@/lib/api"
+import { formatLocalDate, getWeekDates } from "@/lib/utils"
 import { PC } from "@/constants/Colors"
-import EventCard from "@/components/EventCard"
 import { AnimatedItem } from "@/components/AnimatedItem"
-import type { TimetableEvent } from "@/lib/types"
 
-const DAY_ABBREVS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-// const CONFETTI_COLORS = [PC.accent, '#FBBF24', '#F59E0B', '#F97316', '#EA580C', '#FFFFFF'];
-const DAY_FULL = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-]
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
+const heroImage = require("@/assets/images/hero.webp")
+
+const PHRASES = [
+  "The stage awaits — come as you are",
+  "Unleash your inner performer",
+  "Where passion meets performance",
+  "Join the circus of your dreams",
+  "Elevate your artistry",
+  "Where ordinary becomes extraordinary",
+  "All levels are welcome",
+  "Come curious, leave inspired",
 ]
 
-function getTodayIndex(): number {
-  const day = new Date().getDay() // 0=Sun
-  return day === 0 ? 6 : day - 1 // Mon=0
-}
+const WORKSHOP_CATEGORIES: { name: string; icon: LucideIcon }[] = [
+  { name: "Poi / Staff / Flow", icon: Flame },
+  { name: "Hoop / Juggling", icon: Circle },
+  { name: "Acrobatics", icon: Accessibility },
+  { name: "Theater & Clowning", icon: Drama },
+  { name: "Dance", icon: Music },
+]
 
-function parseDateDayIndex(dateStr: string): number {
-  const [y, m, d] = dateStr.split("-").map(Number)
-  const day = new Date(y, m - 1, d).getDay() // 0=Sun
-  return day === 0 ? 6 : day - 1 // Mon=0
-}
-
-function formatWeekRange(monday: Date, sunday: Date): string {
-  const d1 = monday.getDate()
-  const m1 = MONTHS[monday.getMonth()]
-  const y1 = monday.getFullYear()
-  const d2 = sunday.getDate()
-  const m2 = MONTHS[sunday.getMonth()]
-  const y2 = sunday.getFullYear()
-
-  if (y1 !== y2) {
-    return `${m1} ${d1}, ${y1} – ${m2} ${d2}, ${y2}`
-  }
-  if (m1 !== m2) {
-    return `${m1} ${d1} – ${m2} ${d2}, ${y2}`
-  }
-  return `${m1} ${d1} – ${d2}, ${y1}`
-}
-
-export default function TimetableScreen() {
+export default function HomeScreen() {
   const insets = useSafeAreaInsets()
-  const todayIndex = useMemo(getTodayIndex, [])
-  const [weekOffset, setWeekOffset] = useState(0)
-  const [selectedDay, setSelectedDay] = useState(todayIndex)
-  const [expandedId, setExpandedId] = useState<number | null>(null)
-
-  const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset])
-  const start = useMemo(() => formatLocalDate(weekDates[0]), [weekDates])
-  const end = useMemo(() => formatLocalDate(weekDates[6]), [weekDates])
-  const weekLabel = useMemo(
-    () => formatWeekRange(weekDates[0], weekDates[6]),
-    [weekDates],
+  const router = useRouter()
+  const phrase = useMemo(
+    () => PHRASES[Math.floor(Math.random() * PHRASES.length)],
+    [],
   )
 
-  function changeWeek(delta: number) {
-    const newOffset = weekOffset + delta
-    setWeekOffset(newOffset)
-    setExpandedId(null)
-    setSelectedDay(newOffset === 0 ? todayIndex : 0)
-  }
+  // Fetch this week's events (same query key as timetable tab to prefetch)
+  const thisWeek = useMemo(() => getWeekDates(0), [])
+  const start = useMemo(() => formatLocalDate(thisWeek[0]), [thisWeek])
+  const end = useMemo(() => formatLocalDate(thisWeek[6]), [thisWeek])
 
-  const {
-    data: events,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: events, isLoading: eventsLoading } = useQuery({
     queryKey: ["timetable", start, end],
     queryFn: () => fetchTimetable(start, end),
+    staleTime: 5 * 60 * 1000,
   })
 
-  const { isGoing, toggle } = useSavedEvents()
+  const { data: artists } = useQuery({
+    queryKey: ["artists"],
+    queryFn: fetchArtists,
+    staleTime: 5 * 60 * 1000,
+  })
 
-  // Group events by day index (Mon=0 ... Sun=6), sorted by startTime
-  const eventsByDay = useMemo(() => {
-    const result: TimetableEvent[][] = Array.from({ length: 7 }, () => [])
-    if (!events) return result
-    for (const event of events) {
-      if (event.isBlocked) continue
-      const idx = parseDateDayIndex(event.date)
-      result[idx].push(event)
-    }
-    for (const dayEvents of result) {
-      dayEvents.sort((a, b) => a.startTime.localeCompare(b.startTime))
-    }
-    return result
+  // Derived stats
+  const workshopCount = useMemo(() => {
+    if (!events) return 0
+    return events.filter((e) => e.isWorkshop && !e.isBlocked).length
   }, [events])
 
-  const selectedEvents = eventsByDay[selectedDay] ?? []
+  const artistCount = artists?.length ?? 0
 
-  function handleCardPress(id: number) {
-    setExpandedId((prev) => (prev === id ? null : id))
-  }
+  const WEEKLY_SHOWS = [
+    {
+      day: "EVERY TUESDAY",
+      title: "Open Stage",
+      description:
+        "An open night where anyone can perform. Perfect for trying new acts!",
+    },
+    {
+      day: "EVERY THURSDAY",
+      title: "Main Show",
+      description:
+        "Our signature weekly show featuring the best acts from the community.",
+    },
+    {
+      day: "EVERY SUNDAY",
+      title: "Main Show",
+      description:
+        "End the week with another spectacular showcase of talent and creativity.",
+    },
+  ]
 
   return (
     <View className="flex-1 bg-pc-bg">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Brand header */}
-        <View className="px-5 pb-4" style={{ paddingTop: insets.top + 12 }}>
-          <Text className="text-pc-accent text-[11px] font-bold tracking-[2px] mb-1">
-            PARADISE CIRCUS
+        {/* Hero Section */}
+        <View className="relative" style={{ height: 380 }}>
+          <Image
+            source={heroImage}
+            className="absolute inset-0 w-full h-full"
+            resizeMode="cover"
+          />
+        </View>
+
+        {/* Brand Title */}
+        <View className="px-6 mt-18">
+          <Text className="text-white text-[42px] font-rye leading-[48px]">
+            PARADISE
           </Text>
-          <Text className="text-pc-text text-[30px] font-rye">
-            Weekly Timetable
+          <Text
+            className="text-[42px] font-rye leading-[48px]"
+            style={{ color: PC.accent }}
+          >
+            CIRCUS
+          </Text>
+          <Text className="text-pc-textMuted text-[16px] italic mt-2 mb-4">
+            {phrase}
           </Text>
         </View>
 
-        {/* Week navigator */}
-        <View className="flex-row items-center justify-between px-3 mb-4">
-          <TouchableOpacity
-            onPress={() => changeWeek(-1)}
-            className="p-2"
-            activeOpacity={0.7}
-          >
-            <ChevronLeft size={20} color={PC.textMuted} />
-          </TouchableOpacity>
-          <Text className="text-pc-textSecondary text-sm font-semibold">
-            {weekLabel}
-          </Text>
-          <TouchableOpacity
-            onPress={() => changeWeek(1)}
-            className="p-2"
-            activeOpacity={0.7}
-          >
-            <ChevronRight size={20} color={PC.textMuted} />
-          </TouchableOpacity>
+        {/* Stats Bar */}
+        <View className="mx-5 -mt-1 mb-6 bg-pc-card rounded-2xl border border-pc-cardBorder overflow-hidden">
+          <View className="flex-row">
+            <View className="flex-1 items-center py-4">
+              <Text
+                className="text-[22px] font-bold"
+                style={{ color: PC.accent }}
+              >
+                {eventsLoading ? "–" : workshopCount}
+              </Text>
+              <Text className="text-pc-textMuted text-[12px] mt-0.5">
+                Workshops
+              </Text>
+            </View>
+            <View className="w-px bg-pc-cardBorder" />
+            <View className="flex-1 items-center py-4">
+              <Text
+                className="text-[22px] font-bold"
+                style={{ color: PC.accent }}
+              >
+                {artistCount || "–"}
+              </Text>
+              <Text className="text-pc-textMuted text-[12px] mt-0.5">
+                Artists
+              </Text>
+            </View>
+            <View className="w-px bg-pc-cardBorder" />
+            <View className="flex-1 items-center py-4">
+              <Text
+                className="text-[22px] font-bold"
+                style={{ color: PC.accent }}
+              >
+                7
+              </Text>
+              <Text className="text-pc-textMuted text-[12px] mt-0.5">Days</Text>
+            </View>
+          </View>
         </View>
 
-        {/* Day chip selector */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View className="flex-row px-5 pb-5 gap-2">
-            {DAY_ABBREVS.map((abbrev, i) => {
-              const count = eventsByDay[i]?.length ?? 0
-              const isSelected = i === selectedDay
+        {/* Workshops Section */}
+        <View className="mb-6">
+          <Text className="text-pc-text text-[22px] font-rye px-5 mb-4">
+            Workshops
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 20, gap: 16 }}
+          >
+            {WORKSHOP_CATEGORIES.map((cat) => {
+              const Icon = cat.icon
               return (
                 <TouchableOpacity
-                  key={abbrev}
-                  onPress={() => {
-                    setSelectedDay(i)
-                    setExpandedId(null)
-                  }}
-                  className={`flex-row items-center rounded-2xl py-2 px-3.5 gap-1.5 ${
-                    isSelected ? "bg-pc-accent" : "bg-pc-card"
-                  }`}
+                  key={cat.name}
                   activeOpacity={0.7}
+                  onPress={() => router.push({ pathname: "/(tabs)/timetable" })}
+                  className="items-center rounded-xl p-3"
+                  style={{ width: 80, backgroundColor: PC.card }}
                 >
-                  <Text
-                    className={`text-sm font-semibold ${isSelected ? "text-black" : "text-pc-textMuted"}`}
-                  >
-                    {abbrev}
-                  </Text>
                   <View
-                    className={`min-w-5 h-5 justify-center items-center px-1 rounded-[10px] ${
-                      isSelected ? "bg-black/30" : "bg-[#0D0A07]"
-                    }`}
+                    className="w-12 h-12 rounded-full items-center justify-center mb-2"
+                    style={{
+                      borderWidth: 2,
+                      borderColor: PC.accent,
+                      backgroundColor: "rgba(240,144,16,0.1)",
+                    }}
                   >
-                    <Text className="text-pc-text text-[11px] font-bold">
-                      {count}
-                    </Text>
+                    <Icon size={22} color={PC.accent} />
                   </View>
+                  <Text
+                    className="text-pc-textSecondary text-[10px] text-center"
+                    numberOfLines={2}
+                  >
+                    {cat.name}
+                  </Text>
                 </TouchableOpacity>
               )
             })}
-          </View>
-        </ScrollView>
-
-        {/* Day label */}
-        <View className="flex-row justify-between items-baseline px-5 mb-4">
-          <Text className="text-pc-text text-[22px] font-bold">
-            {DAY_FULL[selectedDay]}
-          </Text>
-          <Text className="text-pc-textMuted text-[13px]">
-            {selectedEvents.length}{" "}
-            {selectedEvents.length === 1 ? "workshop" : "workshops"}
-          </Text>
+          </ScrollView>
         </View>
 
-        {/* Events */}
-        <View className="px-5 pb-8">
-          {isLoading && (
-            <ActivityIndicator color={PC.accent} className="mt-10" />
-          )}
-          {isError && (
-            <Text className="text-pc-textMuted text-[15px] text-center mt-10">
-              Could not load workshops. Check your connection.
-            </Text>
-          )}
-          {!isLoading && !isError && selectedEvents.length === 0 && (
-            <Text className="text-pc-textMuted text-[15px] text-center mt-10">
-              No workshops today
-            </Text>
-          )}
-          {selectedEvents.map((event, index) => (
-            <AnimatedItem key={event.id} index={index}>
-              <EventCard
-                event={event}
-                isExpanded={expandedId === event.id}
-                onPress={() => handleCardPress(event.id)}
-                isGoing={isGoing(event.id)}
-                onToggleSchedule={() => toggle(event)}
-              />
+        {/* Weekly Shows Section */}
+        <View className="px-5 pb-10">
+          <Text
+            className="text-[11px] font-bold tracking-[2px] mb-1"
+            style={{ color: PC.accent }}
+          >
+            LIVE ENTERTAINMENT
+          </Text>
+          <Text className="text-pc-text text-[22px] font-rye mb-2">
+            Weekly Shows
+          </Text>
+          <Text className="text-pc-textMuted text-[14px] mb-5">
+            Every week we come together to celebrate our art. Two main shows and
+            one open stage.
+          </Text>
+          {WEEKLY_SHOWS.map((show, index) => (
+            <AnimatedItem key={show.day} index={index}>
+              <View
+                className="rounded-xl mb-3 p-5 border border-pc-cardBorder"
+                style={{ backgroundColor: PC.card }}
+              >
+                <Text
+                  className="text-[11px] font-bold tracking-[2px] mb-1"
+                  style={{ color: PC.accent }}
+                >
+                  {show.day}
+                </Text>
+                <Text
+                  className="text-[20px] font-rye mb-2"
+                  style={{ color: PC.text }}
+                >
+                  {show.title}
+                </Text>
+                <Text
+                  className="text-[14px] leading-[20px]"
+                  style={{ color: PC.text, opacity: 0.8 }}
+                >
+                  {show.description}
+                </Text>
+              </View>
             </AnimatedItem>
           ))}
         </View>

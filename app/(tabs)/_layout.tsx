@@ -1,5 +1,5 @@
 import React from "react"
-import { CalendarDays, Clock, Users } from "lucide-react-native"
+import { CalendarDays, Flame, User, Users } from "lucide-react-native"
 import { Tabs } from "expo-router"
 import { PC } from "@/constants/Colors"
 
@@ -24,15 +24,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Timetable",
-          tabBarIcon: ({ color }) => <CalendarDays size={24} color={color} />,
+          title: "Home",
+          tabBarIcon: ({ color }) => <Flame size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="schedule"
+        name="timetable"
         options={{
-          title: "My Schedule",
-          tabBarIcon: ({ color }) => <Clock size={24} color={color} />,
+          title: "Timetable",
+          tabBarIcon: ({ color }) => <CalendarDays size={24} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -40,6 +40,13 @@ export default function TabLayout() {
         options={{
           title: "Artists",
           tabBarIcon: ({ color }) => <Users size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="schedule"
+        options={{
+          title: "My Schedule",
+          tabBarIcon: ({ color }) => <User size={24} color={color} />,
         }}
       />
     </Tabs>
