@@ -5,11 +5,11 @@ import { useQuery } from "@tanstack/react-query"
 import {
   Flame,
   Circle,
-  Accessibility,
   Drama,
   Music,
   type LucideIcon,
 } from "lucide-react-native"
+import { AcrobaticsIcon } from "@/components/AcrobaticsIcon"
 import { useRouter } from "expo-router"
 import { fetchTimetable, fetchArtists } from "@/lib/api"
 import { formatLocalDate, getWeekDates } from "@/lib/utils"
@@ -33,10 +33,13 @@ const PHRASES = [
   "Flow is a conversation with gravity",
 ]
 
-const WORKSHOP_CATEGORIES: { name: string; icon: LucideIcon }[] = [
+const WORKSHOP_CATEGORIES: {
+  name: string
+  icon: React.ComponentType<{ size?: number; color?: string }>
+}[] = [
   { name: "Poi / Staff / Flow", icon: Flame },
   { name: "Hoop / Juggling", icon: Circle },
-  { name: "Acrobatics", icon: Accessibility },
+  { name: "Acrobatics", icon: AcrobaticsIcon },
   { name: "Theater & Clowning", icon: Drama },
   { name: "Dance", icon: Music },
 ]

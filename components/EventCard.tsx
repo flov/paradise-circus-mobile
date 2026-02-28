@@ -83,15 +83,29 @@ export default function EventCard({
                   backgroundColor:
                     event.level === "Beginner"
                       ? "#22c55e"
-                      : event.level === "Intermediate"
-                        ? "#eab308"
-                        : event.level === "Advanced"
-                          ? "#ef4444"
-                          : PC.separator,
+                      : event.level === "Beg/Int"
+                        ? "#86efac"
+                        : event.level === "Intermediate"
+                          ? "#eab308"
+                          : event.level === "Int/Adv"
+                            ? "#f97316"
+                            : event.level === "Advanced"
+                              ? "#ef4444"
+                              : PC.separator,
                 }}
               >
                 <Text className="text-black text-[11px] font-bold">
                   {event.level}
+                </Text>
+              </View>
+            )}
+            {event.isWorkshop && event.prop && (
+              <View
+                className="rounded-md px-2 py-0.5 ml-2"
+                style={{ backgroundColor: PC.separator }}
+              >
+                <Text className="text-pc-textMuted text-[11px] font-bold">
+                  {event.prop.name}
                 </Text>
               </View>
             )}
@@ -167,10 +181,17 @@ export default function EventCard({
       <Animated.View style={[expandStyle, { overflow: "hidden" }]}>
         <View className="mt-2">
           <View className="h-px bg-pc-separator my-2.5" />
+
+          {/* Description */}
           {event.description ? (
-            <Text className="text-pc-textSecondary text-sm leading-[21px] mb-3.5">
-              {event.description}
-            </Text>
+            <View className="mb-3.5">
+              <Text className="text-pc-textMuted text-[11px] uppercase tracking-wider mb-1.5">
+                About this workshop
+              </Text>
+              <Text className="text-pc-textSecondary text-sm leading-[21px]">
+                {event.description}
+              </Text>
+            </View>
           ) : null}
           <TouchableOpacity
             onPress={() => {
