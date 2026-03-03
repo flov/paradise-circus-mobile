@@ -3,6 +3,7 @@ import {
   View,
   Text,
   FlatList,
+  ScrollView,
   TextInput,
   ActivityIndicator,
   TouchableOpacity,
@@ -177,7 +178,7 @@ export default function ArtistsScreen() {
                     onPress={() => setPropPickerVisible(false)}
                   >
                     <Pressable>
-                      <View style={{ backgroundColor: PC.card, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 32 }}>
+                      <View style={{ backgroundColor: PC.card, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 32, maxHeight: '60%' }}>
                         {/* Handle */}
                         <View style={{ alignItems: 'center', paddingVertical: 12 }}>
                           <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: PC.cardBorder }} />
@@ -191,17 +192,19 @@ export default function ArtistsScreen() {
                             All props
                           </Text>
                         </TouchableOpacity>
-                        {allProps.map((prop) => (
-                          <TouchableOpacity
-                            key={prop}
-                            onPress={() => { setSelectedProp(prop); setPropPickerVisible(false); }}
-                            style={{ paddingHorizontal: 20, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: PC.cardBorder }}
-                          >
-                            <Text style={{ color: selectedProp === prop ? PC.accent : PC.text, fontSize: 15, fontWeight: selectedProp === prop ? '700' : '400' }}>
-                              {prop}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
+                        <ScrollView bounces={false}>
+                          {allProps.map((prop) => (
+                            <TouchableOpacity
+                              key={prop}
+                              onPress={() => { setSelectedProp(prop); setPropPickerVisible(false); }}
+                              style={{ paddingHorizontal: 20, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: PC.cardBorder }}
+                            >
+                              <Text style={{ color: selectedProp === prop ? PC.accent : PC.text, fontSize: 15, fontWeight: selectedProp === prop ? '700' : '400' }}>
+                                {prop}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </ScrollView>
                       </View>
                     </Pressable>
                   </Pressable>
