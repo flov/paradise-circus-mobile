@@ -1,5 +1,12 @@
 import React, { useMemo } from "react"
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native"
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useQuery } from "@tanstack/react-query"
 import {
@@ -13,10 +20,13 @@ import { AcrobaticsIcon } from "@/components/AcrobaticsIcon"
 import { useRouter } from "expo-router"
 import { fetchTimetable, fetchArtists } from "@/lib/api"
 import { formatLocalDate, getWeekDates } from "@/lib/utils"
+import { LinearGradient } from "expo-linear-gradient"
 import { PC } from "@/constants/Colors"
 import { AnimatedItem } from "@/components/AnimatedItem"
 
 const heroImage = require("@/assets/images/hero.webp")
+
+const TABLET_BREAKPOINT = 600
 
 const PHRASES = [
   "Spin, breathe, connect",
@@ -45,8 +55,11 @@ const WORKSHOP_CATEGORIES: {
 ]
 
 export default function HomeScreen() {
+  const { width } = useWindowDimensions()
   const insets = useSafeAreaInsets()
   const router = useRouter()
+  const isTablet = width >= TABLET_BREAKPOINT
+  const heroHeight = isTablet ? 480 : 380
   const phrase = useMemo(
     () => PHRASES[Math.floor(Math.random() * PHRASES.length)],
     [],
@@ -101,12 +114,33 @@ export default function HomeScreen() {
   return (
     <View className="flex-1 bg-pc-bg">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Hero Section */}
-        <View className="relative" style={{ height: 380 }}>
-          <Image
-            source={heroImage}
-            className="absolute inset-0 w-full h-full"
-            resizeMode="cover"
+        {/* Hero Section — bottom-anchored so the fader at the image bottom stays visible on iPad */}
+        <View
+          className="relative"
+          style={{ height: heroHeight, overflow: "hidden" }}
+        >
+          <View
+            className="absolute left-0 right-0 bottom-0"
+            style={{ height: heroHeight * 2, width: "100%" }}
+          >
+            <Image
+              source={heroImage}
+              className="w-full h-full"
+              style={{ width: "100%", height: "100%" }}
+              resizeMode="cover"
+            />
+          </View>
+          <LinearGradient
+            colors={["transparent", PC.bg]}
+            locations={[0.5, 1]}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+            pointerEvents="none"
           />
         </View>
 
@@ -224,7 +258,9 @@ export default function HomeScreen() {
           </Text>
           {WEEKLY_SHOWS.map((show, index) => (
             <AnimatedItem key={show.day} index={index}>
-              <View
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => router.push({ pathname: "/(tabs)/timetable" })}
                 className="rounded-xl mb-3 p-5 border border-pc-cardBorder"
                 style={{ backgroundColor: PC.card }}
               >
@@ -246,7 +282,7 @@ export default function HomeScreen() {
                 >
                   {show.description}
                 </Text>
-              </View>
+              </TouchableOpacity>
             </AnimatedItem>
           ))}
         </View>

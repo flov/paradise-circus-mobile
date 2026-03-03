@@ -1,26 +1,25 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, ThemeProvider } from '@react-navigation/native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useFonts } from 'expo-font';
-import { JosefinSans_700Bold } from '@expo-google-fonts/josefin-sans';
-import { Rye_400Regular } from '@expo-google-fonts/rye';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import 'react-native-reanimated';
-import { fetchArtists } from '@/lib/api';
-import '../global.css';
+import FontAwesome from "@expo/vector-icons/FontAwesome"
+import { DarkTheme, ThemeProvider } from "@react-navigation/native"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { useFonts } from "expo-font"
+import { JosefinSans_700Bold } from "@expo-google-fonts/josefin-sans"
+import { Rye_400Regular } from "@expo-google-fonts/rye"
+import { Stack } from "expo-router"
+import * as SplashScreen from "expo-splash-screen"
+import { useEffect } from "react"
+import { SafeAreaProvider } from "react-native-safe-area-context"
+import "react-native-reanimated"
+import { fetchArtists } from "@/lib/api"
+import { SavedEventsProvider } from "@/providers/SavedEventsProvider"
+import "../global.css"
 
-export {
-  ErrorBoundary,
-} from 'expo-router';
+export { ErrorBoundary } from "expo-router"
 
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
-};
+  initialRouteName: "(tabs)",
+}
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync()
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,42 +28,51 @@ const queryClient = new QueryClient({
       retry: 2,
     },
   },
-});
+})
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     JosefinSans_700Bold,
     Rye_400Regular,
     ...FontAwesome.font,
-  });
+  })
 
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    if (error) throw error
+  }, [error])
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
-      queryClient.prefetchQuery({ queryKey: ['artists'], queryFn: fetchArtists, staleTime: 5 * 60_000 });
+      SplashScreen.hideAsync()
+      queryClient.prefetchQuery({
+        queryKey: ["artists"],
+        queryFn: fetchArtists,
+        staleTime: 5 * 60_000,
+      })
     }
-  }, [loaded]);
+  }, [loaded])
 
   if (!loaded) {
-    return null;
+    return null
   }
 
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={DarkTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="artists/[username]" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          </Stack>
-        </ThemeProvider>
+        <SavedEventsProvider>
+          <ThemeProvider value={DarkTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="artists/[username]"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+            </Stack>
+          </ThemeProvider>
+        </SavedEventsProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
-  );
+  )
 }
