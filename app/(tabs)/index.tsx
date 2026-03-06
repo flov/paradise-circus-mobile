@@ -155,7 +155,7 @@ export default function HomeScreen() {
           >
             CIRCUS
           </Text>
-          <Text className="text-pc-textMuted text-[16px] italic mt-2 mb-4">
+          <Text className="text-pc-textMuted text-[16px] italic mt-2 mb-6">
             {phrase}
           </Text>
         </View>
@@ -171,7 +171,7 @@ export default function HomeScreen() {
                 {eventsLoading ? "–" : workshopCount}
               </Text>
               <Text className="text-pc-textMuted text-[12px] mt-0.5">
-                Workshops
+                Workshops this week
               </Text>
             </View>
             <View className="w-px bg-pc-cardBorder" />
