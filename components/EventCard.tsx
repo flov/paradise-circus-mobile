@@ -9,8 +9,9 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated"
-import { Clock, MapPin } from "lucide-react-native"
+import { Clock, MapPin, CalendarPlus } from "lucide-react-native"
 import { PC, getEventBorderColor } from "@/constants/Colors"
+import { addEventToCalendar } from "@/lib/calendar"
 import type { TimetableEvent } from "@/lib/types"
 
 interface Props {
@@ -215,10 +216,28 @@ export default function EventCard({
             </View>
           ) : null}
           <TouchableOpacity
+            onPress={() => addEventToCalendar(event)}
+            className="rounded-[10px] py-3 flex-row items-center justify-center"
+            style={{ borderWidth: 1, borderColor: PC.accent }}
+            activeOpacity={0.8}
+          >
+            <CalendarPlus
+              size={16}
+              color={PC.accent}
+              style={{ marginRight: 6 }}
+            />
+            <Text
+              style={{ color: PC.accent }}
+              className="text-[15px] font-bold"
+            >
+              Add to Calendar
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => {
               onToggleSchedule()
             }}
-            className={`rounded-[10px] py-3 items-center ${
+            className={`rounded-[10px] mt-2 py-3 items-center ${
               isGoing
                 ? "bg-pc-accentDanger border border-[#8B2020]"
                 : "bg-pc-accent"
