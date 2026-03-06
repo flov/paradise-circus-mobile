@@ -104,7 +104,10 @@ export default function EventCard({
                 className="rounded-md px-2 py-0.5 ml-2"
                 style={{ backgroundColor: PC.separator }}
               >
-                <Text className="text-pc-textMuted text-[11px] font-bold">
+                <Text
+                  style={{ color: PC.accent }}
+                  className="text-[11px] font-bold"
+                >
                   {event.prop.name}
                 </Text>
               </View>
@@ -191,6 +194,24 @@ export default function EventCard({
               <Text className="text-pc-textSecondary text-sm leading-[21px]">
                 {event.description}
               </Text>
+              {event.prop && (
+                <View className="flex-row items-center mt-2">
+                  <Text className="text-pc-textMuted text-[12px] uppercase mr-1.5">
+                    Prop
+                  </Text>
+                  <View
+                    className="rounded-md px-2 py-0.5"
+                    style={{ backgroundColor: PC.separator }}
+                  >
+                    <Text
+                      style={{ color: PC.accent }}
+                      className="text-[11px] font-bold"
+                    >
+                      {event.prop.name}
+                    </Text>
+                  </View>
+                </View>
+              )}
             </View>
           ) : null}
           <TouchableOpacity
